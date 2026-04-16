@@ -1,0 +1,29 @@
+# Python artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Environments
+.venv/
+env/
+venv/
+ENV/
+.env
+
+# IDEs and Editors
+.vscode/
+.idea/
+
+# OS specific
+.DS_Store
+Thumbs.db
+
+# Project specific
+*.log
+sql_app.db
+
+# MacOS
+**/.DS_Store/*
