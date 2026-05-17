@@ -35,3 +35,7 @@ class Sale(Base):
         server_default=func.now(),
         nullable=False
     )
+
+    sale_items: Mapped[list['SaleItems']] = relationship(
+        back_populates='sale'
+    )
