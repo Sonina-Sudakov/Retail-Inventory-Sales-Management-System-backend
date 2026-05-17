@@ -1,9 +1,8 @@
 from datetime import datetime
 
-from sqlalchemy import String, func
-from sqlalchemy.orm import Mapped, mapped_column
-
 from base import Base
+from sqlalchemy import String, func
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 
 class Shop(Base):
@@ -52,4 +51,8 @@ class Shop(Base):
         default=func.now(), 
         onupdate=func.now(),
         nullable=False
+    )
+
+    orders: Mapped[list['Order']] = relationship(
+        back_populates='shop'
     )
