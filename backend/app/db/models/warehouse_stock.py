@@ -24,7 +24,7 @@ class WarehouseStock(Base):
     )
 
     product: Mapped['Product | None'] = relationship(
-        back_populates='product'
+        back_populates='warehouse_stocks'
     )
 
     quantity: Mapped[int] = mapped_column(
