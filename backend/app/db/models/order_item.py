@@ -31,8 +31,3 @@ class OrderItem(Base):
         nullable=False
     )
 
-    price: Mapped[Decimal] = mapped_column(
-        Numeric(precision=10, scale=2),
-        nullable=False
-    )
-
