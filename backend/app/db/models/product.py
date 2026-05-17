@@ -54,3 +54,7 @@ class Product(Base):
     warehouse_stocks: Mapped[list["WarehouseStock"]] = relationship(
         back_populates="warehouse_stocks"
     )
+
+    shop_stocks: Mapped[list['ShopStock']] = relationship(
+        back_populates='product'
+    )

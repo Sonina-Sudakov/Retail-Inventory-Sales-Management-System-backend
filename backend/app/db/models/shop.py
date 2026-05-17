@@ -53,3 +53,7 @@ class Shop(Base):
         onupdate=func.now(),
         nullable=False
     )
+
+    shop_stocks: Mapped[list['ShopStock']] = relationship(
+        back_populates='shop'
+    )
