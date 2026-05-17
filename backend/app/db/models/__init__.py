@@ -5,6 +5,6 @@ from app.db.models.user import User
 from app.db.models.warehouse_stock import WarehouseStock
 from app.db.models.shop_stock import ShopStock
 from app.db.models.sale import Sale
-from app.db.models.sale_items import SaleItems
-from app.db.models.order_items import OrderItems
+from app.db.models.sale_item import SaleItem
+from app.db.models.order_item import OrderItem
 from app.db.models.shipment import Shipment
