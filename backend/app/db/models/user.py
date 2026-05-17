@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from sqlalchemy import Enum, String, func
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from base import Base
 from enums import UserRole
@@ -48,4 +48,12 @@ class User(Base):
 
     sales: Mapped[list['Sale']] = relationship(
         back_populates='user'
+    )
+
+    created_shipments: Mapped[list['Shipment']] = relationship(
+        back_populates='created_by'
+    )
+
+    accepted_shipments: Mapped[list['Shipment']] = relationship(
+        back_populates='accepted_by'
     )

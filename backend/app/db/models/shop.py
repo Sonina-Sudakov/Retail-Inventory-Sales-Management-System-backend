@@ -60,3 +60,7 @@ class Shop(Base):
     orders: Mapped[list['Order']] = relationship(
         back_populates='shop'
     )
+
+    shipments: Mapped[list['Shipment']] = relationship(
+        back_populates='to_shop'
+    )
