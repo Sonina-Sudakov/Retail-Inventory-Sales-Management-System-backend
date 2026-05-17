@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from sqlalchemy import String, func
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from base import Base
 
@@ -55,5 +55,9 @@ class Shop(Base):
     )
 
     shop_stocks: Mapped[list['ShopStock']] = relationship(
+        back_populates='shop'
+    )
+
+    sales: Mapped[list['Sale']] = relationship(
         back_populates='shop'
     )

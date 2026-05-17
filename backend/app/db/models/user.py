@@ -44,3 +44,7 @@ class User(Base):
         onupdate=func.now(),
         nullable=False
     )
+
+    sales: Mapped[list['Sale']] = relationship(
+        back_populates='user'
+    )
