@@ -15,31 +15,26 @@ class Shop(Base):
 
     name: Mapped[str] = mapped_column(
         String(60),
-        unique=True,
         nullable=False
     )
 
-    adress: Mapped[str] = mapped_column(
+    address: Mapped[str] = mapped_column(
         String(100),
-        unique=True,
         nullable=False
     )
 
     contact_face: Mapped[str] = mapped_column(
         String(100),
-        unique=True,
         nullable=False
     )
 
     phone_number: Mapped[str] = mapped_column(
         String(16),
-        unique=True,
         nullable=False
     )
 
     email: Mapped[str] = mapped_column(
         String(60),
-        unique=True,
         nullable=False
     )
 
