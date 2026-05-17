@@ -1,9 +1,8 @@
 from datetime import datetime
 
-from sqlalchemy import func, ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column, relationship
-
 from base import Base
+from sqlalchemy import ForeignKey, func
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 
 class Sale(Base):

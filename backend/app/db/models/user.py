@@ -1,9 +1,9 @@
 from datetime import datetime
 
+from base import Base
 from sqlalchemy import Enum, String, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from base import Base
 from enums import UserRole
 
 
