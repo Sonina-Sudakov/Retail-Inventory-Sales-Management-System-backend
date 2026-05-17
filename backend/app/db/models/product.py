@@ -2,7 +2,7 @@ from datetime import datetime
 from decimal import Decimal
 
 from sqlalchemy import Numeric, String, func
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from base import Base
 
@@ -49,4 +49,8 @@ class Product(Base):
         default=func.now(), 
         onupdate=func.now(),
         nullable=False
+    )
+
+    warehouse_stocks: Mapped[list["WarehouseStock"]] = relationship(
+        back_populates="warehouse_stocks"
     )
