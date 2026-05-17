@@ -25,13 +25,13 @@ class Shop(Base):
         nullable=False
     )
 
-    contactFace: Mapped[str] = mapped_column(
+    contact_face: Mapped[str] = mapped_column(
         String(100),
         unique=True,
         nullable=False
     )
 
-    phoneNumber: Mapped[str] = mapped_column(
+    phone_number: Mapped[str] = mapped_column(
         String(16),
         unique=True,
         nullable=False
