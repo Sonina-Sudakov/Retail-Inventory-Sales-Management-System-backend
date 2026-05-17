@@ -1,0 +1,8 @@
+fastapi[standart]>=0.115.0
+pydantic>=2.13.1
+sqlalchemy>=2.0.0
+uvicorn>=0.47.0
+python-jose[cryptography]
+passlib[bcrypt]
+asyncpg>=0.29.0
+alembic>=1.13.0
