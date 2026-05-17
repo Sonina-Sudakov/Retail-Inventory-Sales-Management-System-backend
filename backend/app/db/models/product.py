@@ -4,7 +4,6 @@ from decimal import Decimal
 from sqlalchemy import Numeric, String, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from app.db.models.sale_items import SaleItems
 from base import Base
 
 
@@ -60,10 +59,10 @@ class Product(Base):
         back_populates='product'
     )
 
-    sale_items: Mapped[list['SaleItems']] = relationship(
+    sale_items: Mapped[list['SaleItem']] = relationship(
         back_populates='product'
     )
 
-    order_items: Mapped[list['OrderItems']] = relationship(
+    order_items: Mapped[list['OrderItem']] = relationship(
         back_populates='product'
     )

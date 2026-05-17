@@ -6,16 +6,16 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from base import Base
 
 
-class SaleItems(Base):
+class OrderItem(Base):
     __tablename__ = 'saleItems'    
 
-    sale_id: Mapped[int] = mapped_column(
-        ForeignKey('sales.id'),
+    order_id: Mapped[int] = mapped_column(
+        ForeignKey('orders.id'),
         primary_key=True
     )
 
-    sale: Mapped['Shop'] = relationship(
-        back_populates='sale_items'
+    order: Mapped['Order'] = relationship(
+        back_populates='order_items'
     )
 
     product_id: Mapped[int] = mapped_column(
@@ -24,7 +24,7 @@ class SaleItems(Base):
     )
 
     product: Mapped['Product'] = relationship( 
-        back_populates='sale_items'
+        back_populates='order_items'
     )
 
     quantity: Mapped[int] = mapped_column(

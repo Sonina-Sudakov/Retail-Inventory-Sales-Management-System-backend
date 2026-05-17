@@ -36,6 +36,6 @@ class Sale(Base):
         nullable=False
     )
 
-    sale_items: Mapped[list['SaleItems']] = relationship(
+    sale_items: Mapped[list['SaleItem']] = relationship(
         back_populates='sale'
     )

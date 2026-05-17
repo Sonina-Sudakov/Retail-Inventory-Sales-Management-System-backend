@@ -38,6 +38,6 @@ class Order(Base):
         nullable=False
     )
 
-    order_items: Mapped[list['OrderItems']] = relationship(
+    order_items: Mapped[list['OrderItem']] = relationship(
         back_populates='order'
     )
