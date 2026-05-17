@@ -3,6 +3,7 @@ from datetime import datetime
 from sqlalchemy import func, ForeignKey, Enum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from app.db.models import shipment_item
 from base import Base
 from enums import ShipmentFromLocation, ShipmentStatus
 
@@ -60,5 +61,9 @@ class Shipment(Base):
 
     accepted_by: Mapped['User | None'] = relationship( 
         back_populates='accepted_shipments'    
+    )
+
+    shipment_items: Mapped[list['ShipmentItem']] = relationship(
+        back_populates='shipment'
     )
 
