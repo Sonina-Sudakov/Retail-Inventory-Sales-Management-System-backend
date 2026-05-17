@@ -1,5 +1,6 @@
 fastapi[standart]>=0.115.0
 pydantic>=2.13.1
+pydantic_settings
 sqlalchemy>=2.0.0
 uvicorn>=0.47.0
 python-jose[cryptography]
