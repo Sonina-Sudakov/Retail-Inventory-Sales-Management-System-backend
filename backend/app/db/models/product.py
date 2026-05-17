@@ -8,7 +8,7 @@ from base import Base
 
 
 class Product(Base):
-    __tablename__ = "products"
+    __tablename__ = 'products'
 
     id: Mapped[int] = mapped_column(
         primary_key=True
@@ -51,8 +51,8 @@ class Product(Base):
         nullable=False
     )
 
-    warehouse_stocks: Mapped[list["WarehouseStock"]] = relationship(
-        back_populates="warehouse_stocks"
+    warehouse_stocks: Mapped[list['WarehouseStock']] = relationship(
+        back_populates='product'
     )
 
     shop_stocks: Mapped[list['ShopStock']] = relationship(
