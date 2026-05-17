@@ -1,10 +1,9 @@
 from datetime import datetime
 from decimal import Decimal
 
+from base import Base
 from sqlalchemy import Numeric, String, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-
-from base import Base
 
 
 class Product(Base):
@@ -46,7 +45,7 @@ class Product(Base):
     )
 
     updated_at: Mapped[datetime] = mapped_column(
-        default=func.now(), 
+        server_default=func.now(), 
         onupdate=func.now(),
         nullable=False
     )
