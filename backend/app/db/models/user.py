@@ -1,9 +1,10 @@
 from datetime import datetime
 
-from sqlalchemy import String, func
+from base import Base
+from sqlalchemy import Enum, String, func
 from sqlalchemy.orm import Mapped, mapped_column
 
-from base import Base
+from enums import UserRole
 
 
 class User(Base):
@@ -30,7 +31,7 @@ class User(Base):
     )
 
     role: Mapped[str] = mapped_column(
-        String(15),
+        Enum(UserRole),
         nullable=False
     )
 
