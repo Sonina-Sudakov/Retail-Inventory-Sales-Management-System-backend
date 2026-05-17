@@ -1,9 +1,10 @@
 from datetime import datetime
 
 from sqlalchemy import String, func
-from sqlalchemy import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column
 
 from base import Base
+
 
 class Shop(Base):
     __tablename__ = "shops"
