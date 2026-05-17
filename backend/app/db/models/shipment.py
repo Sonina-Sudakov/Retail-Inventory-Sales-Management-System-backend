@@ -1,11 +1,11 @@
 from datetime import datetime
 
-from sqlalchemy import func, ForeignKey, Enum
+from base import Base
+from sqlalchemy import Enum, ForeignKey, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from app.db.models import shipment_item
-from base import Base
 from enums import ShipmentFromLocation, ShipmentStatus
+
 
 class Shipment(Base):
     __tablename__ = "shipments"
