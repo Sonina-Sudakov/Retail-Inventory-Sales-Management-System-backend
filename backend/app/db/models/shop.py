@@ -56,6 +56,7 @@ class Shop(Base):
     sales: Mapped[list['Sale']] = relationship(
         back_populates='shop'
     )
+
     orders: Mapped[list['Order']] = relationship(
         back_populates='shop'
     )
