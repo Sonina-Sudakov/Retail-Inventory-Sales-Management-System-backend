@@ -1,12 +1,13 @@
 from datetime import datetime
 
-from base import Base
 from sqlalchemy import String, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from base import Base
+
 
 class Shop(Base):
-    __tablename__ = "shops"
+    __tablename__ = 'shops'
 
     id: Mapped[int] = mapped_column(
         primary_key=True

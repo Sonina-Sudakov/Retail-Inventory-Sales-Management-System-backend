@@ -1,12 +1,13 @@
 from datetime import datetime
 
-from sqlalchemy import String, func, ForeignKey
+from sqlalchemy import ForeignKey, String, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from base import Base
 
+
 class WarehouseStock(Base):
-    __tablename__ = "warehouseStocks"
+    __tablename__ = 'warehouseStocks'
 
     id: Mapped[int] = mapped_column(
         primary_key=True
@@ -18,12 +19,12 @@ class WarehouseStock(Base):
     )
 
     product_id: Mapped[int | None] = mapped_column(
-        ForeignKey("products.id"),
+        ForeignKey('products.id'),
         nullable=True
     )
 
-    product: Mapped["Product | None"] = relationship(
-        back_populates="product"
+    product: Mapped['Product | None'] = relationship(
+        back_populates='product'
     )
 
     quantity: Mapped[int] = mapped_column(
