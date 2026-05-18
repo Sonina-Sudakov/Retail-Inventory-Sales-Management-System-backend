@@ -41,14 +41,14 @@ class BaseRepository(
         return list(result.scalars().all())
 
 
-    async def create(
+    async def save(
         self,
         entity: ModelType
     ) -> ModelType:
 
         self.session.add(entity)
 
-        await self.session.commit()
+        await self.session.flush()
 
         await self.session.refresh(entity)
 
@@ -62,4 +62,4 @@ class BaseRepository(
         
         await self.session.delete(entity)
 
-        await self.session.commit()
+        await self.session.flush()
