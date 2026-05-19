@@ -36,7 +36,7 @@ class SaleRepository(
         shop_id: int
     ) -> list[Sale]:
         
-        stmt = select(Sale).where(Sale.id == shop_id)
+        stmt = select(Sale).where(Sale.shop_id == shop_id)
 
         result = await self.session.execute(stmt)
 
