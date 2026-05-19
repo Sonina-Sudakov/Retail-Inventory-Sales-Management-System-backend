@@ -1,7 +1,7 @@
-from sqlalchemy.sql.expression import select
 from app.db.models.sale import Sale
 from app.db.repositories.base_repository import BaseRepository
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.sql.expression import select
 
 
 class SaleRepository(
