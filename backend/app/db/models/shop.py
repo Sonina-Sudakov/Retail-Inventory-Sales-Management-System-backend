@@ -2,7 +2,7 @@ from datetime import datetime
 
 from base import Base
 from sqlalchemy import String, func
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column
 
 
 class Shop(Base):
@@ -46,24 +46,4 @@ class Shop(Base):
         server_default=func.now(), 
         onupdate=func.now(),
         nullable=False
-    )
-
-    shop_stocks: Mapped[list['ShopStock']] = relationship(
-        back_populates='shop',
-        lazy='raise'
-    )
-
-    sales: Mapped[list['Sale']] = relationship(
-        back_populates='shop',
-        lazy='raise'
-    )
-
-    orders: Mapped[list['Order']] = relationship(
-        back_populates='shop',
-        lazy='raise'
-    )
-
-    shipments: Mapped[list['Shipment']] = relationship(
-        back_populates='to_shop',
-        lazy='raise'
     )
