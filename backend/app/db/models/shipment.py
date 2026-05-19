@@ -23,7 +23,7 @@ class Shipment(Base):
         nullable=True
     )
 
-    to_shop: Mapped['Shop | None'] = mapped_column(
+    to_shop: Mapped['Shop | None'] = relationship(
         back_populates = 'shipments'
     )
 
