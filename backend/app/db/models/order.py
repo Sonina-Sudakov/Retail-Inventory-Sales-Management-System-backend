@@ -13,12 +13,12 @@ class Order(Base):
         primary_key=True
     )
 
-    shop_id: Mapped[int] = mapped_column(
+    to_shop_id: Mapped[int] = mapped_column(
         ForeignKey('shops.id'),
         nullable=False
     )
 
-    shop: Mapped['Shop'] = relationship(
+    to_shop: Mapped['Shop'] = relationship(
         back_populates='orders',
         lazy='raise'
     )
