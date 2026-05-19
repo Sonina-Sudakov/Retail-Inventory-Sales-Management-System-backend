@@ -49,17 +49,21 @@ class Shop(Base):
     )
 
     shop_stocks: Mapped[list['ShopStock']] = relationship(
-        back_populates='shop'
+        back_populates='shop',
+        lazy='raise'
     )
 
     sales: Mapped[list['Sale']] = relationship(
-        back_populates='shop'
+        back_populates='shop',
+        lazy='raise'
     )
 
     orders: Mapped[list['Order']] = relationship(
-        back_populates='shop'
+        back_populates='shop',
+        lazy='raise'
     )
 
     shipments: Mapped[list['Shipment']] = relationship(
-        back_populates='to_shop'
+        back_populates='to_shop',
+        lazy='raise'
     )

@@ -51,21 +51,26 @@ class Product(Base):
     )
 
     warehouse_stocks: Mapped[list['WarehouseStock']] = relationship(
-        back_populates='product'
+        back_populates='product',
+        lazy='raise'
     )
 
     shop_stocks: Mapped[list['ShopStock']] = relationship(
-        back_populates='product'
+        back_populates='product',
+        lazy='raise'
     )
 
     sale_items: Mapped[list['SaleItem']] = relationship(
-        back_populates='product'
+        back_populates='product',
+        lazy='raise'
     )
 
     order_items: Mapped[list['OrderItem']] = relationship(
-        back_populates='product'
+        back_populates='product',
+        lazy='raise'
     )
 
     shipment_items: Mapped[list['ShipmentItem']] = relationship(
-        back_populates='product'
+        back_populates='product',
+        lazy='raise'
     )

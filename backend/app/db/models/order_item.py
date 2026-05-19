@@ -12,7 +12,8 @@ class OrderItem(Base):
     )
 
     order: Mapped['Order'] = relationship(
-        back_populates='order_items'
+        back_populates='order_items',
+        lazy='raise'
     )
 
     product_id: Mapped[int] = mapped_column(
@@ -21,7 +22,8 @@ class OrderItem(Base):
     )
 
     product: Mapped['Product'] = relationship( 
-        back_populates='order_items'
+        back_populates='order_items',
+        lazy='raise'
     )
 
     quantity: Mapped[int] = mapped_column(

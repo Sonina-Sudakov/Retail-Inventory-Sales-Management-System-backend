@@ -12,7 +12,8 @@ class ShipmentItem(Base):
     )
 
     shipment: Mapped['Shipment'] = relationship(
-        back_populates='shipment_items'
+        back_populates='shipment_items',
+        lazy='raise'
     )
 
     product_id: Mapped[int] = mapped_column(
@@ -21,7 +22,8 @@ class ShipmentItem(Base):
     )
 
     product: Mapped['Product'] = relationship( 
-        back_populates='shipment_items'
+        back_populates='shipment_items',
+        lazy='raise'
     )
 
     quantity: Mapped[int] = mapped_column(

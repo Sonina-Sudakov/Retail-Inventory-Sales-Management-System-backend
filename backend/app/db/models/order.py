@@ -1,10 +1,9 @@
 from datetime import datetime
 
 from base import Base
+from enums import OrderStatus
 from sqlalchemy import Enum, ForeignKey, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-
-from enums import OrderStatus
 
 
 class Order(Base):
@@ -20,7 +19,8 @@ class Order(Base):
     )
 
     shop: Mapped['Shop'] = relationship(
-        back_populates='orders'
+        back_populates='orders',
+        lazy='raise'
     )
 
     status: Mapped[str] = mapped_column(
@@ -39,5 +39,6 @@ class Order(Base):
     )
 
     order_items: Mapped[list['OrderItem']] = relationship(
-        back_populates='order'
+        back_populates='order',
+        lazy='raise'
     )

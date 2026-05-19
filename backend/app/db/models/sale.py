@@ -18,7 +18,8 @@ class Sale(Base):
     )
 
     shop: Mapped['Shop'] = relationship( 
-        back_populates='sales'
+        back_populates='sales',
+        lazy='raise'
     )
 
     user_id: Mapped[int] = mapped_column(
@@ -27,7 +28,8 @@ class Sale(Base):
     )
 
     user: Mapped['User'] = relationship(
-        back_populates='sales'
+        back_populates='sales',
+        lazy='raise'
     )
 
     created_at: Mapped[datetime] = mapped_column(
@@ -36,5 +38,6 @@ class Sale(Base):
     )
 
     sale_items: Mapped[list['SaleItem']] = relationship(
-        back_populates='sale'
+        back_populates='sale',
+        lazy='raise'
     )

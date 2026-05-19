@@ -23,7 +23,8 @@ class WarehouseStock(Base):
     )
 
     product: Mapped['Product | None'] = relationship(
-        back_populates='warehouse_stocks'
+        back_populates='warehouse_stocks',
+        lazy='raise'
     )
 
     quantity: Mapped[int] = mapped_column(
