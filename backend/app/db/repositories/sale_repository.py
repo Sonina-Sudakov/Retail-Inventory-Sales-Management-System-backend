@@ -1,6 +1,7 @@
 from app.db.models.sale import Sale
 from app.db.repositories.base_repository import BaseRepository
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm.strategy_options import selectinload
 from sqlalchemy.sql.expression import select
 
 
@@ -12,6 +13,22 @@ class SaleRepository(
         session: AsyncSession
     ):
         super().__init__(Sale, session)
+
+
+    async def get_full_sale_by_id(
+        self,
+        id: int
+    ) -> Sale | None:
+        sale = await self.get_by_id(
+            id,
+            options=[
+                selectinload(Sale.shop),
+                selectinload(Sale.user),
+                selectinload(Sale.sale_items)
+            ]
+        )
+
+        return sale
 
 
     async def get_shop_sales(
