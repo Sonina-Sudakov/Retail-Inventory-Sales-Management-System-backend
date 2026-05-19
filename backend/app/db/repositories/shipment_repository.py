@@ -2,6 +2,7 @@ from app.db.models.shipment import Shipment
 from app.db.repositories.base_repository import BaseRepository
 from enums import ShipmentStatus
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm.strategy_options import selectinload
 from sqlalchemy.sql.expression import select
 
 
