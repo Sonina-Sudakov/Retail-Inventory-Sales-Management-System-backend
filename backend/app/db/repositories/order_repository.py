@@ -1,9 +1,8 @@
-from sqlalchemy.sql.expression import select
 from app.db.models.order import Order
 from app.db.repositories.base_repository import BaseRepository
-from sqlalchemy.ext.asyncio import AsyncSession
-
 from enums import OrderStatus
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.sql.expression import select
 
 
 class OrderRepository(
@@ -27,6 +26,22 @@ class OrderRepository(
 
         return list(result.scalars().all())
 
+
+    async def get_full_order_by_id(
+        self,
+        id: int
+    ) -> Order | None:
+        
+        order = await self.get_by_id(
+            id,
+            options=[
+                selectinload(Order.shop),
+                selectinload(Order.order_items)
+            ]
+        )
+
+        return order
+
    
     async def get_orders_by_status(
         self,
@@ -36,6 +51,5 @@ class OrderRepository(
         stmt = select(Order).where(Order.status == status)
 
         result = await self.session.execute(stmt)
-
 
         return list(result.scalars().all())   
