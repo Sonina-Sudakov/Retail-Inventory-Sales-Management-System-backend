@@ -3,7 +3,7 @@ from datetime import datetime
 from base import Base
 from enums import UserRole
 from sqlalchemy import Enum, String, func
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column
 
 
 class User(Base):
@@ -43,19 +43,4 @@ class User(Base):
         server_default=func.now(), 
         onupdate=func.now(),
         nullable=False
-    )
-
-    sales: Mapped[list['Sale']] = relationship(
-        back_populates='user',
-        lazy='raise'
-    )
-
-    created_shipments: Mapped[list['Shipment']] = relationship(
-        back_populates='created_by',
-        lazy='raise'
-    )
-
-    accepted_shipments: Mapped[list['Shipment']] = relationship(
-        back_populates='accepted_by',
-        lazy='raise'
     )

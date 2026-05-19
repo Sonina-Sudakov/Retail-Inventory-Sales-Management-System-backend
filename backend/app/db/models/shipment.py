@@ -24,7 +24,7 @@ class Shipment(Base):
     )
 
     to_shop: Mapped['Shop | None'] = relationship(
-        back_populates = 'shipments'
+        lazy='raise'
     )
 
     status: Mapped[str] = mapped_column(
@@ -50,7 +50,6 @@ class Shipment(Base):
     )
 
     created_by: Mapped['User'] = relationship( 
-        back_populates='created_shipments',
         lazy='raise'
     )
 
@@ -60,7 +59,6 @@ class Shipment(Base):
     )
 
     accepted_by: Mapped['User | None'] = relationship( 
-        back_populates='accepted_shipments',
         lazy='raise'
     )
 
@@ -68,4 +66,3 @@ class Shipment(Base):
         back_populates='shipment',
         lazy='raise'
     )
-

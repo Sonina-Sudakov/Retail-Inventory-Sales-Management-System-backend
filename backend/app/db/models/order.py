@@ -19,7 +19,6 @@ class Order(Base):
     )
 
     to_shop: Mapped['Shop'] = relationship(
-        back_populates='orders',
         lazy='raise'
     )
 

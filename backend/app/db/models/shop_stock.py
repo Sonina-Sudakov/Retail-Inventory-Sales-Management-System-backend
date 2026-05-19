@@ -14,7 +14,6 @@ class ShopStock(Base):
     )
 
     product: Mapped['Product'] = relationship( 
-        back_populates='shop_stocks',
         lazy='raise'
     )
 
@@ -24,7 +23,6 @@ class ShopStock(Base):
     )
 
     shop: Mapped['Shop'] = relationship(
-        back_populates='shop_stocks',
         lazy='raise'
     )
 

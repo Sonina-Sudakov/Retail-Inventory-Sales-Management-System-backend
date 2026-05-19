@@ -24,7 +24,6 @@ class SaleItem(Base):
     )
 
     product: Mapped['Product'] = relationship( 
-        back_populates='sale_items',
         lazy='raise'
     )
 
