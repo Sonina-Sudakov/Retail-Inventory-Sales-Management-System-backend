@@ -26,6 +26,24 @@ class ShipmentRepository(
 
         return list(result.scalars().all())
 
+
+    async def get_full_shipment_by_id(
+        self,
+        id: int
+    ) -> Shipment | None:
+        
+        shipment = await self.get_by_id(
+            id,
+            options=[
+                selectinload(Shipment.to_shop),
+                selectinload(Shipment.created_by),
+                selectinload(Shipment.accepted_by),
+                selectinload(Shipment.shipment_items)
+            ]
+        )
+
+        return shipment
+
    
     async def get_shipments_by_status(
         self,
