@@ -1,8 +1,10 @@
-from app.db.models.order import Order
-from app.db.repositories.base_repository import BaseRepository
-from enums import OrderStatus
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql.expression import select
+
+from app.db.models.order import Order
+from app.db.models.shop import Shop
+from app.db.repositories.base_repository import BaseRepository
+from enums import OrderStatus
 
 
 class OrderRepository(
@@ -48,7 +50,15 @@ class OrderRepository(
         status: OrderStatus
     ) -> list[Order]:
 
-        stmt = select(Order).where(Order.status == status)
+        stmt = (
+            select(
+                Order,
+                Shop.name,
+                Shop.address
+            )
+            .join(Shop)
+            .where(Order.status == status)
+        )
 
         result = await self.session.execute(stmt)
 

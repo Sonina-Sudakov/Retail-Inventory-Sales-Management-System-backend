@@ -1,9 +1,11 @@
-from app.db.models.shipment import Shipment
-from app.db.repositories.base_repository import BaseRepository
-from enums import ShipmentStatus
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm.strategy_options import selectinload
 from sqlalchemy.sql.expression import select
+
+from app.db.models.shipment import Shipment
+from app.db.models.shop import Shop
+from app.db.repositories.base_repository import BaseRepository
+from enums import ShipmentStatus
 
 
 class ShipmentRepository(
@@ -51,7 +53,15 @@ class ShipmentRepository(
         status: ShipmentStatus
     ) -> list[Shipment]:
 
-        stmt = select(Shipment).where(Shipment.status == status)
+        stmt = (
+            select(
+                Shipment,
+                Shop.name,
+                Shop.address
+            )
+            .join(Shop)
+            .where(Shipment.status == status)
+        )
 
         result = await self.session.execute(stmt)
 
