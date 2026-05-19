@@ -1,7 +1,8 @@
 from typing import Generic, TypeVar
 
-from sqlalchemy import select
+from sqlalchemy import Sequence, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm.interfaces import ORMOption
 
 ModelType = TypeVar('ModelType')
 
@@ -21,20 +22,26 @@ class BaseRepository(
 
     async def get_by_id(
         self,
-        id: int
+        id: int,
+        options: Sequence[ORMOption] | None = None
     ) -> ModelType | None:
 
         return await self.session.get(
             self.model,
-            id
+            id,
+            options=options
         )
 
 
     async def get_all(
-        self
+        self,
+        options: Sequence[ORMOption] | None = None
     ) -> list[ModelType]:
 
         stmt = select(self.model)
+
+        if options:
+            stmt = stmt.options(*options)
 
         result = await self.session.execute(stmt)
 
