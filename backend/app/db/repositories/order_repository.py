@@ -1,0 +1,41 @@
+from sqlalchemy.sql.expression import select
+from app.db.models.order import Order
+from app.db.repositories.base_repository import BaseRepository
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from enums import OrderStatus
+
+
+class OrderRepository(
+    BaseRepository[Order]
+):
+    def __init__(
+        self,
+        session: AsyncSession
+    ):
+        super().__init__(Order, session)
+
+
+    async def get_shop_orders(
+        self,
+        shop_id: int
+    ) -> list[Order]:
+        
+        stmt = select(Order).where(Order.to_shop_id == shop_id)
+
+        result = await self.session.execute(stmt)
+
+        return list(result.scalars().all())
+
+   
+    async def get_orders_by_status(
+        self,
+        status: OrderStatus
+    ) -> list[Order]:
+
+        stmt = select(Order).where(Order.status == status)
+
+        result = await self.session.execute(stmt)
+
+
+        return list(result.scalars().all())   
