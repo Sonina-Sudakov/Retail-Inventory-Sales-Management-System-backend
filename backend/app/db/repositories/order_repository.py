@@ -29,6 +29,19 @@ class OrderRepository(
         return list(result.scalars().all())
 
 
+    async def get_user_orders(
+        self,
+        user_id: int
+    ) -> list[Order]:
+
+        stmt = select(Order).where(Order.created_by_id == user_id)
+
+        result = await self.session.execute(stmt)
+
+        return list(result.scalars().all())
+
+
+
     async def get_full_order_by_id(
         self,
         id: int
