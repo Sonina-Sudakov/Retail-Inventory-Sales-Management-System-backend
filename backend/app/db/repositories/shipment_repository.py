@@ -3,6 +3,7 @@ from sqlalchemy.orm.strategy_options import selectinload
 from sqlalchemy.sql.expression import select
 
 from app.db.models.shipment import Shipment
+from app.db.models.shipment_item import ShipmentItem
 from app.db.models.shop import Shop
 from app.db.repositories.base_repository import BaseRepository
 from enums import ShipmentStatus
@@ -66,3 +67,13 @@ class ShipmentRepository(
         result = await self.session.execute(stmt)
 
         return list(result.scalars().all())        
+
+
+    async def save_shipment_item(
+        self,
+        entity: ShipmentItem
+    ) -> None:
+
+        self.session.add(entity)
+
+        await self.session.flush()
