@@ -1,8 +1,10 @@
-from app.db.models.sale import Sale
-from app.db.repositories.base_repository import BaseRepository
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm.strategy_options import selectinload
 from sqlalchemy.sql.expression import select
+
+from app.db.models.sale import Sale
+from app.db.models.sale_item import SaleItem
+from app.db.repositories.base_repository import BaseRepository
 
 
 class SaleRepository(
@@ -41,3 +43,13 @@ class SaleRepository(
         result = await self.session.execute(stmt)
 
         return list(result.scalars().all())
+
+
+    async def save_sale_item(
+        self,
+        entity: SaleItem
+    ) -> None:
+
+        self.session.add(entity)
+
+        await self.session.flush()
