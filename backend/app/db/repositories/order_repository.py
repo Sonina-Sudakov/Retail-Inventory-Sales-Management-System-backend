@@ -2,6 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql.expression import select
 
 from app.db.models.order import Order
+from app.db.models.order_item import OrderItem
 from app.db.models.shop import Shop
 from app.db.repositories.base_repository import BaseRepository
 from enums import OrderStatus
@@ -41,7 +42,6 @@ class OrderRepository(
         return list(result.scalars().all())
 
 
-
     async def get_full_order_by_id(
         self,
         id: int
@@ -76,3 +76,13 @@ class OrderRepository(
         result = await self.session.execute(stmt)
 
         return list(result.scalars().all())   
+
+
+    async def save_order_item(
+        self,
+        entity: OrderItem
+    ) -> None:
+
+        self.session.add(entity)
+
+        await self.session.flush()
