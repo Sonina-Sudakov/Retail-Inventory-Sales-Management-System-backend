@@ -1,9 +1,10 @@
 from datetime import datetime
 
 from base import Base
-from enums import OrderStatus
 from sqlalchemy import Enum, ForeignKey, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from enums import OrderStatus
 
 
 class Order(Base):
@@ -19,6 +20,15 @@ class Order(Base):
     )
 
     to_shop: Mapped['Shop'] = relationship(
+        lazy='raise'
+    )
+
+    created_by_id: Mapped[int] = mapped_column(
+        ForeignKey('users.id'),
+        nullable=False
+    )
+
+    created_by: Mapped['User'] = relationship(
         lazy='raise'
     )
 
