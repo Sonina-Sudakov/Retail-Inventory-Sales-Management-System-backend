@@ -1,10 +1,11 @@
+from sqlalchemy.ext.asyncio.session import AsyncSession
+from sqlalchemy.orm import selectinload
+from sqlalchemy.sql.expression import select
+
 from app.db.models.product import Product
 from app.db.models.shop import Shop
 from app.db.models.shop_stock import ShopStock
 from app.db.repositories.base_repository import BaseRepository
-from sqlalchemy.ext.asyncio.session import AsyncSession
-from sqlalchemy.orm import selectinload
-from sqlalchemy.sql.expression import select
 
 
 class ShopStockRepository(
@@ -17,7 +18,7 @@ class ShopStockRepository(
         super().__init__(ShopStock, session)
 
 
-    async def get_full_shop_stock(
+    async def get_full_product_in_shop(
         self,
         shop_id: int,
         product_id: int
@@ -34,7 +35,7 @@ class ShopStockRepository(
         return result.scalar_one_or_none()
 
 
-    async def get_shop_stock(
+    async def get_product_in_shop(
         self,
         shop_id: int,
         product_id: int
@@ -67,7 +68,6 @@ class ShopStockRepository(
         result = await self.session.execute(stmt)
 
         return list(result.scalars().all())
-
 
 
     async def get_shop_stocks(
