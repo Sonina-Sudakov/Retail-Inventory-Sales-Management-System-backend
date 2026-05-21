@@ -28,7 +28,7 @@ class WarehouseStockRepository(
                 Product.unit
             )
             .join(Product)
-            .where(WarehouseStock.product == product_id))
+            .where(WarehouseStock.product_id == product_id))
 
         result = await self.session.execute(stmt)
 
