@@ -1,8 +1,12 @@
 from datetime import datetime
+from decimal import Decimal
+
+from pydantic import BaseModel
+
+from app.schemas.product import ProductViewDTO
 from app.schemas.shop import ShopViewDTO
 from app.schemas.user import UserViewDTO
-from app.schemas.product import ProductViewDTO
-from pydantic import BaseModel
+
 
 class SaleCreateDTO(BaseModel):
     shop_id: int
@@ -14,7 +18,7 @@ class SaleCreateDTO(BaseModel):
 class SaleItemCreateDTO(BaseModel):
     product_id: int
     quantity: int
-    price: float
+    price: Decimal
 
 
 class SaleDetailedViewDTO(BaseModel):
@@ -29,7 +33,7 @@ class SaleItemViewDTO(BaseModel):
     sale_id: int
     product: ProductViewDTO
     quantity: int
-    price: float
+    price: Decimal
 
 
 class SaleViewDTO(BaseModel):
