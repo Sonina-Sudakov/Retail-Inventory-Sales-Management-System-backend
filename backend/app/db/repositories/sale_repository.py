@@ -1,10 +1,11 @@
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm.strategy_options import selectinload
+from sqlalchemy.sql.expression import select
+
 from app.db.models.sale import Sale
 from app.db.models.sale_item import SaleItem
 from app.db.models.user import User
 from app.db.repositories.base_repository import BaseRepository
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm.strategy_options import selectinload
-from sqlalchemy.sql.expression import select
 
 
 class SaleRepository(

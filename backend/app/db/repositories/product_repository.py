@@ -1,6 +1,7 @@
+from sqlalchemy.ext.asyncio.session import AsyncSession
+
 from app.db.models.product import Product
 from app.db.repositories.base_repository import BaseRepository
-from sqlalchemy.ext.asyncio.session import AsyncSession
 
 
 class ProductRepository(
