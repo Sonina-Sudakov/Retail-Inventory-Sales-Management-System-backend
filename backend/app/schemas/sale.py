@@ -27,6 +27,7 @@ class SaleDetailedViewDTO(BaseModel):
     user: UserViewDTO
     count: int
     items: list[SaleItemViewDTO]
+    created_at: datetime
 
 
 class SaleItemViewDTO(BaseModel):
