@@ -1,4 +1,5 @@
 from datetime import datetime
+from enum import unique
 
 from base import Base
 from sqlalchemy import String, func
@@ -29,12 +30,15 @@ class Shop(Base):
 
     phone_number: Mapped[str] = mapped_column(
         String(16),
-        nullable=False
+        nullable=False;
+        unique=True
     )
 
     email: Mapped[str] = mapped_column(
         String(60),
-        nullable=False
+        nullable=False,
+        unique=True
+
     )
 
     created_at: Mapped[datetime] = mapped_column(
