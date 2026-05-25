@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 
 class ProductService:
-    def __init(self, session: AsyncSession, product_repository: ProductRepository):
+    def __init__(self, session: AsyncSession, product_repository: ProductRepository):
 
         self.session = session
         self.product_repository = product_repository
