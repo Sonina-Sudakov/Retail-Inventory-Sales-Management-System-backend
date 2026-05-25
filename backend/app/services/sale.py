@@ -4,23 +4,48 @@ from sqlalchemy.orm.strategy_options import selectinload
 from app.db.models.sale import Sale
 from app.db.models.sale_item import SaleItem
 from app.db.repositories.sale_repository import SaleRepository
+from app.db.repositories.shop_repository import ShopRepository
+from app.db.repositories.user_repository import UserRepository
+from app.db.repositories.product_repository import ProductRepository
 from app.schemas.sale import (SaleCreateDTO, SaleDetailedViewDTO, SaleListDTO, 
                                  SaleViewDTO)
-from app.services.exceptions import EmptySaleError, SaleNotFoundError
+from app.services.exceptions import (EmptySaleError, ProductNotFoundError, SaleNotFoundError, ShopNotFoundError,
+                                    ShopNotFoundError, ProductNotFoundError, UserNotFoundError)
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
 class SaleService:
-    def __init__(self, session: AsyncSession, sale_repository: SaleRepository):
+    def __init__(
+            self, 
+            session: AsyncSession, 
+            sale_repository: SaleRepository,
+            shop_repository: ShopRepository,
+            user_repository: UserRepository,
+            product_repository: ProductRepository
+        ):
 
         self.session = session
         self.sale_repository = sale_repository
+        self.shop_repository = shop_repository
+        self.user_repository = user_repository
+        self.product_repository = product_repository
 
 
     async def create_sale(self, schema: SaleCreateDTO) -> SaleViewDTO:
       
         if not schema.items:
             raise EmptySaleError()
+
+        shop = await self.shop_repository.get_by_id(schema.shop_id)
+        
+        if shop is None:
+            raise ShopNotFoundError(schema.shop_id)
+
+        user = await self.user_repository.get_by_id(schema.user_id)
+
+        if user is None:
+            raise UserNotFoundError(schema.user_id)
 
         sale = Sale(
             shop_id=schema.shop_id,
@@ -31,6 +56,12 @@ class SaleService:
             sale = await self.sale_repository.save(sale)
 
             for item in schema.items:
+
+                product = await self.product_repository.get_by_id(item.product_id)
+
+                if product is None:
+                    raise ProductNotFoundError(item.product_id)
+                
                 await self.sale_repository.save_sale_item(
                     SaleItem(
                         sale_id=sale.id,
