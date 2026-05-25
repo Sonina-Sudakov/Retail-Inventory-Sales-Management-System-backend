@@ -15,8 +15,9 @@ class ProductService:
 
 
     async def create_product(self, schema: ProductCreateDTO) -> ProductViewDTO:
-       
-        if self.product_repository.get_by_name(schema.name) is not None:
+
+        product = await self.product_repository.get_by_name(schema.name) 
+        if product is not None:
             raise ProductAlreadyExistsError(schema.name)
 
         product = Product(
@@ -65,17 +66,20 @@ class ProductService:
 
     
     async def update(self, schema: ProductUpdateDTO) -> ProductViewDTO:
-
-        if self.product_repository.get_by_name(schema.name) is None:
+        
+        product = await self.product_repository.get_by_id(schema.id)
+        if product is None:
             raise ProductNotFoundError(schema.id)
+        
+        existing_product = await self.product_repository.get_by_name(schema.name)
+        if existing_product is not None and existing_product.id != schema.id:
+            raise ProductAlreadyExistsError(schema.name)
 
-        product = Product(
-            name=schema.name,
-            unit=schema.unit,
-            origin=schema.origin,
-            type_=schema.type_,
-            price=schema.price
-        )
+        product.name=schema.name
+        product.unit=schema.unit
+        product.origin=schema.origin
+        product.type_=schema.type_
+        product.price=schema.price
 
         async with self.session.begin():
             product = await self.product_repository.save(product)

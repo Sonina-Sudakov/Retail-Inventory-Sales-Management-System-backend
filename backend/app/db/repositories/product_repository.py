@@ -1,4 +1,5 @@
 from sqlalchemy.ext.asyncio.session import AsyncSession
+from sqlalchemy import select
 
 from app.db.models.product import Product
 from app.db.repositories.base_repository import BaseRepository
@@ -19,7 +20,8 @@ class ProductRepository(
         name: str
     ) -> Product | None:
 
-        return await self.session.get(
-            self.model,
-            name
-        ) 
+        stmt = select(Product).where(Product.name == name)
+
+        result = await self.session.execute(stmt)
+
+        return result.scalar_one_or_none()
