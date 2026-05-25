@@ -38,3 +38,14 @@ class EmptySaleError(Exception):
         super().__init__(
             "Sale must contain at least one item"
         )
+
+class OrderNotFoundError(Exception):
+    def __init__(self, order_id: int):
+        self.order_id = order_id
+
+
+class EmptyOrderError(Exception):
+    def __init__(self):
+        super().__init__(
+            "Order must contain at least one item"
+        )
