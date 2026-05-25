@@ -5,8 +5,8 @@ from app.db.models.sale import Sale
 from app.db.models.sale_item import SaleItem
 from app.db.repositories.sale_repository import SaleRepository
 from app.schemas.sale import (SaleCreateDTO, SaleDetailedViewDTO, SaleListDTO, 
-                                 SaleUpdateDTO, SaleViewDTO)
-from app.services.exceptions import SaleAlreadyExistsError, SaleNotFoundError
+                                 SaleViewDTO)
+from app.services.exceptions import EmptySaleError, SaleNotFoundError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
