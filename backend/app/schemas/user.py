@@ -1,33 +1,35 @@
-from pydantic import BaseModel
-
 from app.enums import UserRole
+from pydantic import BaseModel, ConfigDict
 
 
-class UserCreateDTO(BaseModel):
+class UserBaseModel(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+
+class UserCreateDTO(UserBaseModel):
     username: str
     fullname: str
     password: str
     role: UserRole
 
 
-class UserViewDTO(BaseModel):
+class UserViewDTO(UserBaseModel):
     id: int
     username: str
     fullname: str
-    password: str
-    role: UserRole
+    role: str
 
 
-class UserListDTO(BaseModel):
+class UserListDTO(UserBaseModel):
     count: int
     items: list[UserViewDTO]
 
 
-class UserUpdatePasswordDTO(BaseModel):
+class UserUpdatePasswordDTO(UserBaseModel):
     id: int
     password: str
 
 
-class UserUpdateFullnameDTO(BaseModel):
+class UserUpdateFullnameDTO(UserBaseModel):
     id: int
     fullname: str
