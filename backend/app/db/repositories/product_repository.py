@@ -12,3 +12,14 @@ class ProductRepository(
         session: AsyncSession
     ):
         super().__init__(Product, session)
+
+
+    async def get_by_name(
+        self, 
+        name: str
+    ) -> Product | None:
+
+        return await self.session.get(
+            self.model,
+            name
+        ) 
