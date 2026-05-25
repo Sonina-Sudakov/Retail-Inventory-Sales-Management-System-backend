@@ -16,7 +16,8 @@ class UserService:
 
     async def create(self, schema: UserCreateDTO) -> UserViewDTO:
 
-        if self.user_repository.get_by_username(schema.username) is not None:
+        user = await self.user_repository.get_by_username(schema.username)
+        if user is not None:
             raise UserAlreadyExistsError(schema.username)
 
         user = User(
@@ -63,31 +64,31 @@ class UserService:
             await self.user_repository.delete(user)
 
 
-    async def change_fullname(self, id: int, fullname: str) -> UserUpdateFullnameDTO:
+    async def change_fullname(self, schema: UserUpdateFullnameDTO) -> UserViewDTO:
 
-        user = await self.user_repository.get_by_id(id)
+        user = await self.user_repository.get_by_id(schema.id)
         
         if user is None:
-            raise UserNotFoundError(id)
+            raise UserNotFoundError(schema.id)
 
-        user.fullname = fullname
+        user.fullname = schema.fullname
         
         async with self.session.begin():
             user = await self.user_repository.save(user)
 
-        return UserUpdateFullnameDTO.model_validate(user)
+        return UserViewDTO.model_validate(user)
 
 
-    async def change_password(self, id: int, password: str) -> UserUpdatePasswordDTO:
+    async def change_password(self, schema.UserUpdatePasswordDTO) -> UserViewDTO:
 
-        user = await self.user_repository.get_by_id(id)
+        user = await self.user_repository.get_by_id(schema.id)
         
         if user is None:
-            raise UserNotFoundError(id)
+            raise UserNotFoundError(schema.id)
 
-        user.hash_password = password # TODO add bcrypt
+        user.hash_password = schema.password # TODO add bcrypt
         
         async with self.session.begin():
             user = await self.user_repository.save(user)
 
-        return UserUpdatePasswordDTO.model_validate(user)
+        return UserViewdDTO.model_validate(user)
