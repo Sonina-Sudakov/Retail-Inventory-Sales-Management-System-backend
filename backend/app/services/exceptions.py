@@ -22,6 +22,19 @@ class ShopNotFoundError(Exception):
     def __init__(self, shop_id: int):
         self.shop_id = shop_id
 
+
 class ShopAlreadyExistsError(Exception):
     def __init__(self, phone_number: str):
         self.phone_number = phone_number
+
+
+class SaleNotFoundError(Exception):
+    def __init__(self, sale_id: int):
+        self.sale_id = sale_id
+
+
+class EmptySaleError(Exception):
+    def __init__(self):
+        super().__init__(
+            "Sale must contain at least one item"
+        )

@@ -35,7 +35,7 @@ class Sale(Base):
         nullable=False
     )
 
-    sale_items: Mapped[list['SaleItem']] = relationship(
+    items: Mapped[list['SaleItem']] = relationship(
         back_populates='sale',
         lazy='raise'
     )
