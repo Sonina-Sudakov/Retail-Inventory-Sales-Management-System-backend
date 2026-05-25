@@ -15,8 +15,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 
 class OrderService:
-    def __init__(self, session: AsyncSession, order_repository: OrderRepository):
-
+    def __init__(
+            self, 
+            session: AsyncSession, 
+            order_repository: OrderRepository, 
+            shop_repository: ShopRepository
+        ):
+        
         self.session = session
         self.order_repository = order_repository
         self.shop_repository = shop_repository

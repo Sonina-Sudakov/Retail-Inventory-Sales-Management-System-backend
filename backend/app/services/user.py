@@ -91,4 +91,4 @@ class UserService:
         async with self.session.begin():
             user = await self.user_repository.save(user)
 
-        return UserViewdDTO.model_validate(user)
+        return UserViewDTO.model_validate(user)
