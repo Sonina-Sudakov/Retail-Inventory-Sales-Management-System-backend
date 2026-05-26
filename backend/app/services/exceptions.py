@@ -49,3 +49,31 @@ class EmptyOrderError(Exception):
         super().__init__(
             "Order must contain at least one item"
         )
+
+
+class ShipmentNotFoundError(Exception):
+    def __init__(self, shipment_id: int):
+        self.shipment_id = shipment_id
+
+
+class EmptyShipmentError(Exception):
+    def __init__(self):
+        super().__init__(
+            "Shipment must contain at least one item"
+        )
+
+
+class ShipmentAlreadyAcceptedError(Exception):
+    def __init__(self, shipment_id: int):
+        super().__init__(
+            "Shipment is already accepted and cannot be canceled"
+        )
+        self.shipment_id = shipment_id
+
+
+class ShipmentAlreadyCancelledError(Exception):
+    def __init__(self, shipment_id: int):
+        super().__init__(
+            "Shipment is already canceled and cannot be accepted"
+        )
+        self.shipment_id = shipment_id
