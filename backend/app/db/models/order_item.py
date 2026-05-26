@@ -12,7 +12,7 @@ class OrderItem(Base):
     )
 
     order: Mapped['Order'] = relationship(
-        back_populates='order_items',
+        back_populates='items',
         lazy='raise'
     )
 

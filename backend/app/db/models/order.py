@@ -47,7 +47,7 @@ class Order(Base):
         nullable=False
     )
 
-    order_items: Mapped[list['OrderItem']] = relationship(
+    items: Mapped[list['OrderItem']] = relationship(
         back_populates='order',
         lazy='raise'
     )
