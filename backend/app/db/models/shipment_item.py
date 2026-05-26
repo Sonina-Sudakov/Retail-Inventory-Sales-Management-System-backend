@@ -12,7 +12,7 @@ class ShipmentItem(Base):
     )
 
     shipment: Mapped['Shipment'] = relationship(
-        back_populates='shipment_items',
+        back_populates='items',
         lazy='raise'
     )
 

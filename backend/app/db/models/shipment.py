@@ -62,7 +62,7 @@ class Shipment(Base):
         lazy='raise'
     )
 
-    shipment_items: Mapped[list['ShipmentItem']] = relationship(
+    items: Mapped[list['ShipmentItem']] = relationship(
         back_populates='shipment',
         lazy='raise'
     )
