@@ -19,7 +19,7 @@ class ShipmentItemCreateDTO(BaseModel):
     quantity: int
 
 
-class ShipmentDetailedView(BaseModel):
+class ShipmentDetailedViewDTO(BaseModel):
     id: int
     from_location: str
     to_shop: ShopViewDTO | None = None
@@ -27,7 +27,7 @@ class ShipmentDetailedView(BaseModel):
     created_by: UserViewDTO
     accepted_by: UserViewDTO | None = None
     created_at: datetime
-    accepted_at: datetime | None = None
+    updated_at: datetime | None = None
     count: int
     items: list[ShipmentItemViewDTO]
 
@@ -45,7 +45,7 @@ class ShipmentViewDTO(BaseModel):
     status: str
     created_by: ShipmentUserViewDTO | None = None
     created_at: datetime
-    accepted_at: datetime | None = None
+    updated_at: datetime | None = None
 
 
 class ShipmentListDTO(BaseModel):
