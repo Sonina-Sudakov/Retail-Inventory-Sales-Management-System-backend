@@ -30,16 +30,16 @@ class OrderService:
     async def create_order(self, schema: OrderCreateDTO) -> OrderViewDTO:
       
         if not schema.items:
-            raise EmptyOrderError()
-
-        order = Order(
-            shop_id=schema.shop_id
-        )
+            raise EmptyOrderError() 
 
         shop = await self.shop_repository.get_by_id(schema.shop_id)
 
         if shop is None:
             raise ShopNotFoundError(schema.shop_id)
+
+        order = Order(
+            shop_id=schema.shop_id
+        )
 
         async with self.session.begin():
             order = await self.order_repository.save(order)
