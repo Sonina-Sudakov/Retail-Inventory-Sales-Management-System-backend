@@ -1,9 +1,7 @@
-from typing import type_check_only
 from app.db.models.shop import Shop
 from app.db.repositories.shop_repository import ShopRepository
-from app.schemas import shop
-from app.schemas.shop import (ShopCreateDTO, ShopListDTO, 
-                                 ShopUpdateDTO, ShopViewDTO)
+from app.schemas.shop import (ShopCreateDTO, ShopListDTO, ShopUpdateDTO,
+                              ShopViewDTO)
 from app.services.exceptions import ShopAlreadyExistsError, ShopNotFoundError
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -68,14 +66,10 @@ class ShopService:
 
     async def update(self, schema: ShopUpdateDTO) -> ShopViewDTO:
 
-        shop = await self.shop_repository.get_by_phone_number(
-            schema.phone_number
-        )
+        shop = await self.shop_repository.get_by_id(schema.id)
+
         if shop is None:
             raise ShopNotFoundError(schema.id)
-
-        if shop is not None and shop.id != schema.id:
-            raise ShopAlreadyExistsError(schema.phone_number)
 
         shop.name = schema.name
         shop.address = schema.address
