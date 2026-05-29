@@ -51,13 +51,3 @@ class SaleRepository(
         result = await self.session.execute(stmt)
 
         return list(result.scalars().all())
-
-
-    async def save_sale_item(
-        self,
-        entity: SaleItem
-    ) -> None:
-
-        self.session.add(entity)
-
-        await self.session.flush()

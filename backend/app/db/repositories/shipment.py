@@ -67,13 +67,3 @@ class ShipmentRepository(
         result = await self.session.execute(stmt)
 
         return list(result.scalars().all())        
-
-
-    async def save_shipment_item(
-        self,
-        entity: ShipmentItem
-    ) -> None:
-
-        self.session.add(entity)
-
-        await self.session.flush()

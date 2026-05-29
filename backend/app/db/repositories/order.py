@@ -77,13 +77,3 @@ class OrderRepository(
         result = await self.session.execute(stmt)
 
         return list(result.scalars().all())   
-
-
-    async def save_order_item(
-        self,
-        entity: OrderItem
-    ) -> None:
-
-        self.session.add(entity)
-
-        await self.session.flush()
