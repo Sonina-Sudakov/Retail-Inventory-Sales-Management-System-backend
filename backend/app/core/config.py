@@ -3,6 +3,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     database_url: str
+    alembic_database_url: str
     JWT_SECRET: str
 
     model_config = SettingsConfigDict(
