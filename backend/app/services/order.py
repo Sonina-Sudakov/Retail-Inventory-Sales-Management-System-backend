@@ -1,17 +1,15 @@
-from typing import type_check_only
-
+from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm.strategy_options import selectinload
+
 from app.db.models.order import Order
 from app.db.models.order_item import OrderItem
-from app.db.repositories import shop_repository
-from app.db.repositories.order_repository import OrderRepository
-from app.db.repositories.shop_repository import ShopRepository
-from app.schemas.order import (OrderCreateDTO, OrderDetailedViewDTO, OrderListDTO, 
-                                 OrderViewDTO)
+from app.db.repositories.order import OrderRepository
+from app.db.repositories.shop import ShopRepository
 from app.enums import OrderStatus
-
-from app.services.exceptions import EmptyOrderError, OrderNotFoundError, ShopNotFoundError
-from sqlalchemy.ext.asyncio import AsyncSession
+from app.schemas.order import (OrderCreateDTO, OrderDetailedViewDTO,
+                               OrderListDTO, OrderViewDTO)
+from app.services.exceptions import (EmptyOrderError, OrderNotFoundError,
+                                     ShopNotFoundError)
 
 
 class OrderService:

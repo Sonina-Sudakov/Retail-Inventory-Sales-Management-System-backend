@@ -3,7 +3,7 @@ from sqlalchemy.sql.expression import select
 
 from app.db.models.product import Product
 from app.db.models.warehouse_stock import WarehouseStock
-from app.db.repositories.base_repository import BaseRepository
+from app.db.repositories.base import BaseRepository
 
 
 class WarehouseStockRepository(

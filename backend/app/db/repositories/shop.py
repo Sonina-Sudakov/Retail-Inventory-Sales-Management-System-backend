@@ -1,8 +1,8 @@
-from sqlalchemy.ext.asyncio.session import AsyncSession
 from sqlalchemy import select
+from sqlalchemy.ext.asyncio.session import AsyncSession
 
 from app.db.models.shop import Shop
-from app.db.repositories.base_repository import BaseRepository
+from app.db.repositories.base import BaseRepository
 
 
 class ShopRepository(

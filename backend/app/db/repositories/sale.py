@@ -5,7 +5,7 @@ from sqlalchemy.sql.expression import select
 from app.db.models.sale import Sale
 from app.db.models.sale_item import SaleItem
 from app.db.models.user import User
-from app.db.repositories.base_repository import BaseRepository
+from app.db.repositories.base import BaseRepository
 
 
 class SaleRepository(

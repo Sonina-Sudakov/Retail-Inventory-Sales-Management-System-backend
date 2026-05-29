@@ -1,19 +1,19 @@
-from typing import type_check_only
-
+from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm.strategy_options import selectinload
+
 from app.db.models.shipment import Shipment
 from app.db.models.shipment_item import ShipmentItem
-from app.db.repositories.shipment_repository import ShipmentRepository
-from app.db.repositories.shop_repository import ShopRepository
-from app.db.repositories.user_repository import UserRepository
-from app.schemas.shipment import (ShipmentCreateDTO, ShipmentDetailedViewDTO, ShipmentListDTO, 
-                                 ShipmentViewDTO)
+from app.db.repositories.shipment import ShipmentRepository
+from app.db.repositories.shop import ShopRepository
+from app.db.repositories.user import UserRepository
 from app.enums import ShipmentStatus
-
-from app.services.exceptions import (EmptyShipmentError, ShipmentNotFoundError, ShopNotFoundError,
-                                     ShipmentAlreadyCancelledError, UserNotFoundError, 
-                                     ShipmentAlreadyAcceptedError)
-from sqlalchemy.ext.asyncio import AsyncSession
+from app.schemas.shipment import (ShipmentCreateDTO, ShipmentDetailedViewDTO,
+                                  ShipmentListDTO, ShipmentViewDTO)
+from app.services.exceptions import (EmptyShipmentError,
+                                     ShipmentAlreadyAcceptedError,
+                                     ShipmentAlreadyCancelledError,
+                                     ShipmentNotFoundError, ShopNotFoundError,
+                                     UserNotFoundError)
 
 
 class ShipmentService:

@@ -1,9 +1,10 @@
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from app.db.models.shop import Shop
-from app.db.repositories.shop_repository import ShopRepository
+from app.db.repositories.shop import ShopRepository
 from app.schemas.shop import (ShopCreateDTO, ShopListDTO, ShopUpdateDTO,
                               ShopViewDTO)
 from app.services.exceptions import ShopAlreadyExistsError, ShopNotFoundError
-from sqlalchemy.ext.asyncio import AsyncSession
 
 
 class ShopService:

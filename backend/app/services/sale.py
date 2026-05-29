@@ -1,18 +1,17 @@
-from typing import type_check_only
-
+from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm.strategy_options import selectinload
+
 from app.db.models.sale import Sale
 from app.db.models.sale_item import SaleItem
-from app.db.repositories.sale_repository import SaleRepository
-from app.db.repositories.shop_repository import ShopRepository
-from app.db.repositories.user_repository import UserRepository
-from app.db.repositories.product_repository import ProductRepository
-from app.schemas.sale import (SaleCreateDTO, SaleDetailedViewDTO, SaleListDTO, 
-                                 SaleViewDTO)
-from app.services.exceptions import (EmptySaleError, ProductNotFoundError, SaleNotFoundError, ShopNotFoundError,
-                                    ShopNotFoundError, ProductNotFoundError, UserNotFoundError)
-
-from sqlalchemy.ext.asyncio import AsyncSession
+from app.db.repositories.product import ProductRepository
+from app.db.repositories.sale import SaleRepository
+from app.db.repositories.shop import ShopRepository
+from app.db.repositories.user import UserRepository
+from app.schemas.sale import (SaleCreateDTO, SaleDetailedViewDTO, SaleListDTO,
+                              SaleViewDTO)
+from app.services.exceptions import (EmptySaleError, ProductNotFoundError,
+                                     SaleNotFoundError, ShopNotFoundError,
+                                     UserNotFoundError)
 
 
 class SaleService:

@@ -5,7 +5,7 @@ from sqlalchemy.sql.expression import select
 from app.db.models.product import Product
 from app.db.models.shop import Shop
 from app.db.models.shop_stock import ShopStock
-from app.db.repositories.base_repository import BaseRepository
+from app.db.repositories.base import BaseRepository
 
 
 class ShopStockRepository(

@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.models.user import User
-from app.db.repositories.user_repository import UserRepository
+from app.db.repositories.user import UserRepository
 from app.schemas.user import (UserCreateDTO, UserListDTO,
                               UserUpdateFullnameDTO, UserUpdatePasswordDTO,
                               UserViewDTO)

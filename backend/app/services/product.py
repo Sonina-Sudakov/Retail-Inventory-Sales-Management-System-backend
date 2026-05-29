@@ -1,10 +1,11 @@
-from typing import type_check_only
-from app.db.models.product import Product
-from app.db.repositories.product_repository import ProductRepository
-from app.schemas.product import (ProductCreateDTO, ProductListDTO, 
-                                 ProductUpdateDTO, ProductViewDTO)
-from app.services.exceptions import ProductAlreadyExistsError, ProductNotFoundError
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.db.models.product import Product
+from app.db.repositories.product import ProductRepository
+from app.schemas.product import (ProductCreateDTO, ProductListDTO,
+                                 ProductUpdateDTO, ProductViewDTO)
+from app.services.exceptions import (ProductAlreadyExistsError,
+                                     ProductNotFoundError)
 
 
 class ProductService:
