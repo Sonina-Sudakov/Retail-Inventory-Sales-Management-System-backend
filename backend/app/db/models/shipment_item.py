@@ -7,6 +7,10 @@ from app.db.models.base import Base
 class ShipmentItem(Base):
     __tablename__ = 'shipment_items'
 
+    __table_args__ = (
+        CheckConstraint('quantity >= 0')
+    )
+
     shipment_id: Mapped[int] = mapped_column(
         ForeignKey('shipments.id'),
         primary_key=True
@@ -27,6 +31,5 @@ class ShipmentItem(Base):
     )
 
     quantity: Mapped[int] = mapped_column(
-        CheckConstraint('quantity >= 0'),
         nullable=False
     )

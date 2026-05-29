@@ -9,6 +9,10 @@ from app.db.models.base import Base
 class WarehouseStock(Base):
     __tablename__ = 'warehouse_stocks'
 
+    __table_args__ = (
+        CheckConstraint('quantity >= 0')
+    )
+
     id: Mapped[int] = mapped_column(
         primary_key=True
     )
@@ -28,7 +32,6 @@ class WarehouseStock(Base):
     )
 
     quantity: Mapped[int] = mapped_column(
-        CheckConstraint('quantity >= 0'),
         nullable=False
     )
 

@@ -9,6 +9,11 @@ from app.db.models.base import Base
 class SaleItem(Base):
     __tablename__ = 'sale_items'
 
+    __table_args__ = (
+        CheckConstraint("quantity >= 0"),
+        CheckConstraint("price >= 0")
+    )
+
     sale_id: Mapped[int] = mapped_column(
         ForeignKey('sales.id'),
         primary_key=True
@@ -29,12 +34,10 @@ class SaleItem(Base):
     )
 
     quantity: Mapped[int] = mapped_column(
-        CheckConstraint("quantity >= 0"),
         nullable=False
     )
 
     price: Mapped[Decimal] = mapped_column(
         Numeric(precision=10, scale=2),
-        CheckConstraint("price >= 0"),
         nullable=False
     )
