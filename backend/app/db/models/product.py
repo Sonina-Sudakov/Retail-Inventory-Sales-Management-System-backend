@@ -1,10 +1,10 @@
 from datetime import datetime
 from decimal import Decimal
-from enum import unique
 
-from base import Base
 from sqlalchemy import Numeric, String, func
 from sqlalchemy.orm import Mapped, mapped_column
+
+from app.db.models.base import Base
 
 
 class Product(Base):

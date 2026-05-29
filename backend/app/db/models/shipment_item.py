@@ -1,6 +1,7 @@
-from base import Base
 from sqlalchemy import CheckConstraint, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from app.db.models.base import Base
 
 
 class ShipmentItem(Base):

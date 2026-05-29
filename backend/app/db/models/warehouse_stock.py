@@ -1,8 +1,9 @@
 from datetime import datetime
 
-from base import Base
 from sqlalchemy import CheckConstraint, ForeignKey, String, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from app.db.models.base import Base
 
 
 class WarehouseStock(Base):

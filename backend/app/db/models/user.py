@@ -1,9 +1,10 @@
 from datetime import datetime
 
-from base import Base
-from enums import UserRole
 from sqlalchemy import Enum, String, func
 from sqlalchemy.orm import Mapped, mapped_column
+
+from app.db.models.base import Base
+from app.enums import UserRole
 
 
 class User(Base):
