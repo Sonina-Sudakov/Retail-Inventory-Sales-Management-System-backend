@@ -1,26 +1,29 @@
-version: "3.8"
-
 services:
   postgres:
     image: postgres:17
-    container_name: erp-database
+    container_name: erp_database
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
-      POSTGRES_DB: erp-db
+      POSTGRES_DB: erp_db
+    ports:
+      - 5432:5432
     volumes:
       - erp_system_database_volume:/var/lib/postgresql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U admin -d admin"]
+      test: ["CMD-SHELL", "pg_isready -U admin -d erp-db"]
       interval: 5s
       timeout: 10s
       retries: 5
 
-  erp_backend:
-    build: ./erp_backend/docker
-    container_name: erp_backend
-    environment:
-      DATABASE_URL: postgresql+psycopg2://admin:admin@postgres@5432/erp-db
-    depends_on:
-      postgres:
-        condition: service_healthy
+#  erp_backend:
+#    build: ./erp_backend/docker
+#    container_name: erp_backend
+#    environment:
+#      DATABASE_URL: postgresql+psycopg2://admin:admin@postgres@5432/erp-db
+#    depends_on:
+#      postgres:
+#        condition: service_healthy
+
+volumes:
+  erp_system_database_volume:
