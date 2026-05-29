@@ -10,7 +10,7 @@ class WarehouseStock(Base):
     __tablename__ = 'warehouse_stocks'
 
     __table_args__ = (
-        CheckConstraint('quantity >= 0')
+        CheckConstraint('quantity >= 0'),
     )
 
     id: Mapped[int] = mapped_column(

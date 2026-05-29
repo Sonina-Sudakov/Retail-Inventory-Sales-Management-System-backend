@@ -8,7 +8,7 @@ class ShipmentItem(Base):
     __tablename__ = 'shipment_items'
 
     __table_args__ = (
-        CheckConstraint('quantity >= 0')
+        CheckConstraint('quantity >= 0'),
     )
 
     shipment_id: Mapped[int] = mapped_column(
