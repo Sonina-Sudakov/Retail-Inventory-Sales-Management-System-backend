@@ -8,18 +8,20 @@ from app.enums import OrderStatus
 from app.schemas.order import (OrderCreate, OrderDetailedView, OrderList,
                                OrderView)
 from app.services.exceptions import (EmptyOrderError, OrderNotFoundError,
-                                     ShopNotFoundError)
+                                     ProductNotFoundError, ShopNotFoundError)
 
 
 class OrderService:
     def __init__(
             self, 
             order_repository: OrderRepository, 
-            shop_repository: ShopRepository
+            shop_repository: ShopRepository,
+            product_repository: ProductRepository
         ):
         
         self.order_repository = order_repository
         self.shop_repository = shop_repository
+        self.product_repository = product_repository
 
 
     async def create_order(self, schema: OrderCreate) -> OrderView:
@@ -32,20 +34,25 @@ class OrderService:
         if shop is None:
             raise ShopNotFoundError(schema.shop_id)
 
-        order = Order(
-            shop_id=schema.shop_id
-        )
-
-        order = await self.order_repository.save(order)
-
         for item in schema.items:
-            await self.order_repository.save_order_item(
+
+            product = await self.product_repository.get_by_id(item.product_id)
+
+            if product is None:
+                raise ProductNotFoundError(item.product_id)
+
+        order = Order(
+            shop_id=schema.shop_id,
+            items=[
                 OrderItem(
-                    order_id=order.id,
                     product_id=item.product_id,
                     quantity=item.quantity                    
                 )
-            )
+                for item in schema.items
+            ]
+        )
+
+        order = await self.order_repository.save(order)
 
         return OrderView.model_validate(order)
 

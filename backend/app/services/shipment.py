@@ -48,20 +48,18 @@ class ShipmentService:
         shipment = Shipment(
             from_location=schema.from_location,
             to_shop_id=schema.to_shop_id,
-            created_by_id=schema.created_by_id
+            created_by_id=schema.created_by_id,
+            items=[
+                ShipmentItem(
+                    product_id=item.product_id,
+                    quantity=item.quantity
+                )
+                for item in schema.items
+            ]
         )
 
 
         shipment = await self.shipment_repository.save(shipment)
-
-        for item in schema.items:
-            await self.shipment_repository.save_shipment_item(
-                ShipmentItem(
-                    shipment_id=shipment.id,
-                    product_id=item.product_id,
-                    quantity=item.quantity                    
-                )
-            )
 
         return ShipmentView.model_validate(shipment)
 

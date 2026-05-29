@@ -42,28 +42,27 @@ class SaleService:
         if user is None:
             raise UserNotFoundError(schema.user_id)
 
-        sale = Sale(
-            shop_id=schema.shop_id,
-            user_id=schema.user_id
-        )
-
-        sale = await self.sale_repository.save(sale)
-
         for item in schema.items:
 
             product = await self.product_repository.get_by_id(item.product_id)
 
             if product is None:
                 raise ProductNotFoundError(item.product_id)
-            
-            await self.sale_repository.save_sale_item(
+
+        sale = Sale(
+            shop_id=schema.shop_id,
+            user_id=schema.user_id,
+            items=[
                 SaleItem(
-                    sale_id=sale.id,
                     product_id=item.product_id,
                     quantity=item.quantity,
                     price=item.price
                 )
-            )
+                for item in schema.items
+            ]
+        )
+
+        sale = await self.sale_repository.save(sale)
 
         return SaleView.model_validate(sale)
 
