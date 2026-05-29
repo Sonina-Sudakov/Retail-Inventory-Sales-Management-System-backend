@@ -1,9 +1,10 @@
 from datetime import datetime
 
-from base import Base
-from enums import ShipmentFromLocation, ShipmentStatus
 from sqlalchemy import Enum, ForeignKey, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from app.db.models.base import Base
+from app.enums import ShipmentFromLocation, ShipmentStatus
 
 
 class Shipment(Base):
@@ -50,6 +51,7 @@ class Shipment(Base):
     )
 
     created_by: Mapped['User'] = relationship( 
+        foreign_keys=[created_by_id],
         lazy='raise'
     )
 
@@ -59,6 +61,7 @@ class Shipment(Base):
     )
 
     accepted_by: Mapped['User | None'] = relationship( 
+        foreign_keys=[accepted_by_id],
         lazy='raise'
     )
 
