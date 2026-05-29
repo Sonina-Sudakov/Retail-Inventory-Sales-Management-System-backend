@@ -1,8 +1,9 @@
 from decimal import Decimal
 
-from base import Base
 from sqlalchemy import CheckConstraint, ForeignKey, Numeric
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from app.db.models.base import Base
 
 
 class SaleItem(Base):
@@ -14,8 +15,8 @@ class SaleItem(Base):
     )
 
     sale: Mapped['Sale'] = relationship(
-        back_populates='sale,
-        lazy='raise'_items'
+        back_populates='items',
+        lazy='raise'
     )
 
     product_id: Mapped[int] = mapped_column(
@@ -33,8 +34,7 @@ class SaleItem(Base):
     )
 
     price: Mapped[Decimal] = mapped_column(
-        CheckConstraint("price >= 0"),
         Numeric(precision=10, scale=2),
+        CheckConstraint("price >= 0"),
         nullable=False
     )
-
