@@ -67,5 +67,6 @@ class Shipment(Base):
 
     items: Mapped[list['ShipmentItem']] = relationship(
         back_populates='shipment',
+        cascade='all, delete-orphan',
         lazy='raise'
     )

@@ -38,5 +38,6 @@ class Sale(Base):
 
     items: Mapped[list['SaleItem']] = relationship(
         back_populates='sale',
+        cascade='all, delete-orphan',
         lazy='raise'
     )
