@@ -7,7 +7,7 @@ from app.db.models.base import Base
 
 
 class SaleItem(Base):
-    __tablename__ = 'saleItems'    
+    __tablename__ = 'sale_items'
 
     sale_id: Mapped[int] = mapped_column(
         ForeignKey('sales.id'),

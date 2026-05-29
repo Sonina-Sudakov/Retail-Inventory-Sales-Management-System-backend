@@ -7,7 +7,7 @@ from app.db.models.base import Base
 
 
 class WarehouseStock(Base):
-    __tablename__ = 'warehouseStocks'
+    __tablename__ = 'warehouse_stocks'
 
     id: Mapped[int] = mapped_column(
         primary_key=True

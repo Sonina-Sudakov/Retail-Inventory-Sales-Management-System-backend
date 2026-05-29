@@ -7,7 +7,7 @@ from app.db.models.base import Base
 
 
 class ShopStock(Base):
-    __tablename__ = 'shopStocks'
+    __tablename__ = 'shop_stocks'
 
     product_id: Mapped[int] = mapped_column(
         ForeignKey('products.id'),

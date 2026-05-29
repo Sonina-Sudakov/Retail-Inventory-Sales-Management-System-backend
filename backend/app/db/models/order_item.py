@@ -5,7 +5,7 @@ from app.db.models.base import Base
 
 
 class OrderItem(Base):
-    __tablename__ = 'orderItems'    
+    __tablename__ = 'order_items'
 
     order_id: Mapped[int] = mapped_column(
         ForeignKey('orders.id'),

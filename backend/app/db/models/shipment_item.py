@@ -5,7 +5,7 @@ from app.db.models.base import Base
 
 
 class ShipmentItem(Base):
-    __tablename__ = 'shipmentItems'    
+    __tablename__ = 'shipment_items'
 
     shipment_id: Mapped[int] = mapped_column(
         ForeignKey('shipments.id'),
