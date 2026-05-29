@@ -1,7 +1,7 @@
 from pydantic import BaseModel, EmailStr
 
 
-class ShopCreateDTO(BaseModel):
+class ShopCreate(BaseModel):
     name: str
     address: str
     contact_face: str
@@ -9,7 +9,7 @@ class ShopCreateDTO(BaseModel):
     email: EmailStr
 
 
-class ShopViewDTO(BaseModel):
+class ShopView(BaseModel):
     id: int
     name: str
     address: str
@@ -18,7 +18,7 @@ class ShopViewDTO(BaseModel):
     email: EmailStr
 
 
-class ShopUpdateDTO(BaseModel):
+class ShopUpdate(BaseModel):
     id: int
     name: str
     address: str
@@ -27,6 +27,6 @@ class ShopUpdateDTO(BaseModel):
     email: EmailStr
 
 
-class ShopListDTO(BaseModel):
+class ShopList(BaseModel):
     count: int
-    items: list[ShopViewDTO]
+    items: list[ShopView]

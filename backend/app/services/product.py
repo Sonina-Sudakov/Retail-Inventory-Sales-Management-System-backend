@@ -2,8 +2,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.models.product import Product
 from app.db.repositories.product import ProductRepository
-from app.schemas.product import (ProductCreateDTO, ProductListDTO,
-                                 ProductUpdateDTO, ProductViewDTO)
+from app.schemas.product import (ProductCreate, ProductList, ProductUpdate,
+                                 ProductView)
 from app.services.exceptions import (ProductAlreadyExistsError,
                                      ProductNotFoundError)
 
@@ -15,7 +15,7 @@ class ProductService:
         self.product_repository = product_repository
 
 
-    async def create_product(self, schema: ProductCreateDTO) -> ProductViewDTO:
+    async def create_product(self, schema: ProductCreate) -> ProductView:
 
         product = await self.product_repository.get_by_name(schema.name) 
         if product is not None:
@@ -32,26 +32,26 @@ class ProductService:
         async with self.session.begin():
             product = await self.product_repository.save(product)
 
-        return ProductViewDTO.model_validate(product)
+        return ProductView.model_validate(product)
 
 
-    async def get_by_id(self, id: int) -> ProductViewDTO:
+    async def get_by_id(self, id: int) -> ProductView:
 
         product = await self.product_repository.get_by_id(id)
         
         if product is None:
             raise ProductNotFoundError(id)
 
-        return ProductViewDTO.model_validate(product)
+        return ProductView.model_validate(product)
 
 
-    async def get_all(self) -> ProductListDTO:
+    async def get_all(self) -> ProductList:
 
         products = await self.product_repository.get_all()
 
-        return ProductListDTO(
+        return ProductList(
             count=len(products),
-            items=[ProductViewDTO.model_validate(product) for product in products]
+            items=[ProductView.model_validate(product) for product in products]
         )
 
 
@@ -66,7 +66,7 @@ class ProductService:
             await self.product_repository.delete(product)
 
     
-    async def update(self, schema: ProductUpdateDTO) -> ProductViewDTO:
+    async def update(self, schema: ProductUpdate) -> ProductView:
         
         product = await self.product_repository.get_by_id(schema.id)
         if product is None:
@@ -85,5 +85,5 @@ class ProductService:
         async with self.session.begin():
             product = await self.product_repository.save(product)
 
-        return ProductViewDTO.model_validate(product)
+        return ProductView.model_validate(product)
 

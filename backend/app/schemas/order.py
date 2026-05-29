@@ -2,64 +2,64 @@ from datetime import datetime
 
 from pydantic import BaseModel
 
-from app.schemas.product import ProductViewDTO
-from app.schemas.shop import ShopViewDTO
-from app.schemas.user import UserViewDTO
+from app.schemas.product import ProductView
+from app.schemas.shop import ShopView
+from app.schemas.user import UserView
 
 
-class OrderCreateDTO(BaseModel):
+class OrderCreate(BaseModel):
     shop_id: int 
     created_by_id: int
     count: int
-    items: list[OrderItemCreateDTO]
+    items: list[OrderItemCreate]
 
 
-class OrderItemCreateDTO(BaseModel):
+class OrderItemCreate(BaseModel):
     product_id: int
     quantity: int
 
 
-class OrderDetailedViewDTO(BaseModel):
+class OrderDetailedView(BaseModel):
     id: int
-    shop: ShopViewDTO
-    created_by: UserViewDTO
+    shop: ShopView
+    created_by: UserView
     status: str
     created_at: datetime
     accepted_at: datetime | None = None
     count: int
-    items: list[OrderItemViewDTO]
+    items: list[OrderItemView]
 
 
-class OrderItemViewDTO(BaseModel):
+class OrderItemView(BaseModel):
     order_id: int
-    product: ProductViewDTO
+    product: ProductView
     quantity: int
 
 
-class OrderViewDTO(BaseModel):
+class OrderView(BaseModel):
     id: int
-    shop: OrderShopViewDTO
-    created_by: OrderUserViewDTO
+    shop: OrderShopView
+    created_by: OrderUserView
     status: str
     created_at: datetime
     accepted_at: datetime | None = None
 
 
-class OrderListDTO(BaseModel):
+class OrderList(BaseModel):
     count: int
-    items: list[OrderViewDTO]
+    items: list[OrderView]
 
 
-class OrderUpdateStatusDTO(BaseModel):
+class OrderUpdateStatus(BaseModel):
     id: int
     status: str
 
 
-class OrderShopViewDTO(BaseModel):
+class OrderShopView(BaseModel):
     id: int
     name: str
 
 
-class OrderUserViewDTO(BaseModel):
+class OrderUserView(BaseModel):
     id: int
     fullname: str

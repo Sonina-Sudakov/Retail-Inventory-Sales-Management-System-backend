@@ -7,8 +7,8 @@ from app.db.repositories.shipment import ShipmentRepository
 from app.db.repositories.shop import ShopRepository
 from app.db.repositories.user import UserRepository
 from app.enums import ShipmentStatus
-from app.schemas.shipment import (ShipmentCreateDTO, ShipmentDetailedViewDTO,
-                                  ShipmentListDTO, ShipmentViewDTO)
+from app.schemas.shipment import (ShipmentCreate, ShipmentDetailedView,
+                                  ShipmentList, ShipmentView)
 from app.services.exceptions import (EmptyShipmentError,
                                      ShipmentAlreadyAcceptedError,
                                      ShipmentAlreadyCancelledError,
@@ -31,7 +31,7 @@ class ShipmentService:
         self.user_repository = user_repository
 
 
-    async def create_shipment(self, schema: ShipmentCreateDTO) -> ShipmentViewDTO:
+    async def create_shipment(self, schema: ShipmentCreate) -> ShipmentView:
       
         if not schema.items:
             raise EmptyShipmentError()
@@ -67,10 +67,10 @@ class ShipmentService:
                     )
                 )
 
-        return ShipmentViewDTO.model_validate(shipment)
+        return ShipmentView.model_validate(shipment)
 
 
-    async def get_by_id(self, id: int) -> ShipmentDetailedViewDTO:
+    async def get_by_id(self, id: int) -> ShipmentDetailedView:
 
         shipment = await self.shipment_repository.get_by_id(
             id,
@@ -80,40 +80,40 @@ class ShipmentService:
         if shipment is None:
             raise ShipmentNotFoundError(id)
 
-        return ShipmentDetailedViewDTO.model_validate(shipment)
+        return ShipmentDetailedView.model_validate(shipment)
 
 
-    async def get_by_shop(self, shop_id: int) -> ShipmentListDTO:
+    async def get_by_shop(self, shop_id: int) -> ShipmentList:
 
         shipments = await self.shipment_repository.get_shop_shipments(shop_id)
         
-        return ShipmentListDTO(
+        return ShipmentList(
             count=len(shipments),
-            items=[ShipmentViewDTO.model_validate(shipment) for shipment in shipments]
+            items=[ShipmentView.model_validate(shipment) for shipment in shipments]
         )
 
 
-    async def get_by_status(self, status: ShipmentStatus) -> ShipmentListDTO:
+    async def get_by_status(self, status: ShipmentStatus) -> ShipmentList:
 
         shipments = await self.shipment_repository.get_shipments_by_status(status)
         
-        return ShipmentListDTO(
+        return ShipmentList(
             count=len(shipments),
-            items=[ShipmentViewDTO.model_validate(shipment) for shipment in shipments]
+            items=[ShipmentView.model_validate(shipment) for shipment in shipments]
         )
 
 
-    async def get_all(self) -> ShipmentListDTO:
+    async def get_all(self) -> ShipmentList:
 
         shipments = await self.shipment_repository.get_all()
 
-        return ShipmentListDTO(
+        return ShipmentList(
             count=len(shipments),
-            items=[ShipmentViewDTO.model_validate(shipment) for shipment in shipments]
+            items=[ShipmentView.model_validate(shipment) for shipment in shipments]
         )
 
 
-    async def update_status(self, id: int, status: ShipmentStatus) -> ShipmentViewDTO:
+    async def update_status(self, id: int, status: ShipmentStatus) -> ShipmentView:
 
         
         shipment = await self.shipment_repository.get_by_id(id)
@@ -126,14 +126,14 @@ class ShipmentService:
         async with self.session.begin():
             shipment = await self.shipment_repository.save(shipment)
 
-        return ShipmentViewDTO.model_validate(shipment)
+        return ShipmentView.model_validate(shipment)
 
 
     async def accept_shipment(
         self,
         id: int,
         user_id: int
-    ) -> ShipmentViewDTO:
+    ) -> ShipmentView:
 
         shipment = await self.shipment_repository.get_by_id(id)
 
@@ -154,13 +154,13 @@ class ShipmentService:
         async with self.session.begin():
             shipment = await self.shipment_repository.save(shipment)
 
-        return ShipmentViewDTO.model_validate(shipment)
+        return ShipmentView.model_validate(shipment)
 
 
     async def cancel_shipment(
         self,
         id: int
-    ) -> ShipmentViewDTO:
+    ) -> ShipmentView:
 
         shipment = await self.shipment_repository.get_by_id(id)
 
@@ -175,4 +175,4 @@ class ShipmentService:
         async with self.session.begin():
             shipment = await self.shipment_repository.save(shipment)
 
-        return ShipmentViewDTO.model_validate(shipment)
+        return ShipmentView.model_validate(shipment)

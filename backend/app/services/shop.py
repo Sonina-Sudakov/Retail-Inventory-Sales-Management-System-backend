@@ -2,8 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.models.shop import Shop
 from app.db.repositories.shop import ShopRepository
-from app.schemas.shop import (ShopCreateDTO, ShopListDTO, ShopUpdateDTO,
-                              ShopViewDTO)
+from app.schemas.shop import ShopCreate, ShopList, ShopUpdate, ShopView
 from app.services.exceptions import ShopAlreadyExistsError, ShopNotFoundError
 
 
@@ -14,7 +13,7 @@ class ShopService:
         self.shop_repository = shop_repository
 
 
-    async def create_shop(self, schema: ShopCreateDTO) -> ShopViewDTO:
+    async def create_shop(self, schema: ShopCreate) -> ShopView:
        
         shop = await self.shop_repository.get_by_phone_number(schema.phone_number)
         if shop is not None:
@@ -31,26 +30,26 @@ class ShopService:
         async with self.session.begin():
             shop = await self.shop_repository.save(shop)
 
-        return ShopViewDTO.model_validate(shop)
+        return ShopView.model_validate(shop)
 
 
-    async def get_by_id(self, id: int) -> ShopViewDTO:
+    async def get_by_id(self, id: int) -> ShopView:
 
         shop = await self.shop_repository.get_by_id(id)
         
         if shop is None:
             raise ShopNotFoundError(id)
 
-        return ShopViewDTO.model_validate(shop)
+        return ShopView.model_validate(shop)
 
 
-    async def get_all(self) -> ShopListDTO:
+    async def get_all(self) -> ShopList:
 
         shops = await self.shop_repository.get_all()
 
-        return ShopListDTO(
+        return ShopList(
             count=len(shops),
-            items=[ShopViewDTO.model_validate(shop) for shop in shops]
+            items=[ShopView.model_validate(shop) for shop in shops]
         )
 
 
@@ -65,7 +64,7 @@ class ShopService:
             await self.shop_repository.delete(shop)
     
 
-    async def update(self, schema: ShopUpdateDTO) -> ShopViewDTO:
+    async def update(self, schema: ShopUpdate) -> ShopView:
 
         shop = await self.shop_repository.get_by_id(schema.id)
 
@@ -81,4 +80,4 @@ class ShopService:
         async with self.session.begin():
             shop = await self.shop_repository.save(shop)
 
-        return ShopViewDTO.model_validate(shop) 
+        return ShopView.model_validate(shop) 

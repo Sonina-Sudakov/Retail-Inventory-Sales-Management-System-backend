@@ -3,57 +3,57 @@ from decimal import Decimal
 
 from pydantic import BaseModel
 
-from app.schemas.product import ProductViewDTO
-from app.schemas.shop import ShopViewDTO
-from app.schemas.user import UserViewDTO
+from app.schemas.product import ProductView
+from app.schemas.shop import ShopView
+from app.schemas.user import UserView
 
 
-class SaleCreateDTO(BaseModel):
+class SaleCreate(BaseModel):
     shop_id: int
     user_id: int
     count: int
-    items: list[SaleItemCreateDTO] 
+    items: list[SaleItemCreate] 
 
 
-class SaleItemCreateDTO(BaseModel):
+class SaleItemCreate(BaseModel):
     product_id: int
     quantity: int
     price: Decimal
 
 
-class SaleDetailedViewDTO(BaseModel):
+class SaleDetailedView(BaseModel):
     id: int
-    shop: ShopViewDTO
-    user: UserViewDTO
+    shop: ShopView
+    user: UserView
     count: int
-    items: list[SaleItemViewDTO]
+    items: list[SaleItemView]
     created_at: datetime
 
 
-class SaleItemViewDTO(BaseModel):
+class SaleItemView(BaseModel):
     sale_id: int
-    product: ProductViewDTO
+    product: ProductView
     quantity: int
     price: Decimal
 
 
-class SaleViewDTO(BaseModel):
+class SaleView(BaseModel):
     id: int
-    shop: SaleShopViewDTO
-    user: SaleUserViewDTO
+    shop: SaleShopView
+    user: SaleUserView
     created_at: datetime
 
 
-class SaleListDTO(BaseModel):
+class SaleList(BaseModel):
     count: int
-    items: list[SaleViewDTO]
+    items: list[SaleView]
 
 
-class SaleShopViewDTO(BaseModel):
+class SaleShopView(BaseModel):
     id: int
     name: str
 
 
-class SaleUserViewDTO(BaseModel):
+class SaleUserView(BaseModel):
     id: int
     fullname: str

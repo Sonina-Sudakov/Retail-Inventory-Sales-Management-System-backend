@@ -3,7 +3,7 @@ from decimal import Decimal
 from pydantic import BaseModel, Field
 
 
-class ProductCreateDTO(BaseModel):
+class ProductCreate(BaseModel):
     name: str
     unit: str
     type_: str = Field(alias='type')
@@ -11,7 +11,7 @@ class ProductCreateDTO(BaseModel):
     origin: str
 
 
-class ProductViewDTO(BaseModel):
+class ProductView(BaseModel):
     id: int
     name: str
     unit: str
@@ -20,7 +20,7 @@ class ProductViewDTO(BaseModel):
     origin: str
 
 
-class ProductUpdateDTO(BaseModel):
+class ProductUpdate(BaseModel):
     id: int
     name: str
     unit: str
@@ -29,6 +29,6 @@ class ProductUpdateDTO(BaseModel):
     origin: str
 
 
-class ProductListDTO(BaseModel):
+class ProductList(BaseModel):
     count: int
-    items: list[ProductViewDTO]
+    items: list[ProductView]

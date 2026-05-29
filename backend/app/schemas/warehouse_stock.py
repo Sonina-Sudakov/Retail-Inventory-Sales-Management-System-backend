@@ -1,18 +1,18 @@
 from pydantic import BaseModel
 
-from app.schemas.product import ProductViewDTO
+from app.schemas.product import ProductView
 
 
-class WarehouseStockCreateDTO(BaseModel):
+class WarehouseStockCreate(BaseModel):
     cell_code: str
     product_id: int
     quantity: int
 
 
-class WarehouseStockViewDTO(BaseModel):
+class WarehouseStockView(BaseModel):
     id: int
     cell_code: str
-    product_id: ProductViewDTO
+    product_id: ProductView
     quantity: int
 
 
@@ -23,6 +23,6 @@ class WarehouseStockUpdate(BaseModel):
     quantity: int
 
 
-class WarehouseStockListDTO(BaseModel):    
+class WarehouseStockList(BaseModel):    
     count: int
-    items: list[WarehouseStockViewDTO]
+    items: list[WarehouseStockView]

@@ -6,8 +6,8 @@ from app.db.models.order_item import OrderItem
 from app.db.repositories.order import OrderRepository
 from app.db.repositories.shop import ShopRepository
 from app.enums import OrderStatus
-from app.schemas.order import (OrderCreateDTO, OrderDetailedViewDTO,
-                               OrderListDTO, OrderViewDTO)
+from app.schemas.order import (OrderCreate, OrderDetailedView, OrderList,
+                               OrderView)
 from app.services.exceptions import (EmptyOrderError, OrderNotFoundError,
                                      ShopNotFoundError)
 
@@ -25,7 +25,7 @@ class OrderService:
         self.shop_repository = shop_repository
 
 
-    async def create_order(self, schema: OrderCreateDTO) -> OrderViewDTO:
+    async def create_order(self, schema: OrderCreate) -> OrderView:
       
         if not schema.items:
             raise EmptyOrderError() 
@@ -51,10 +51,10 @@ class OrderService:
                     )
                 )
 
-        return OrderViewDTO.model_validate(order)
+        return OrderView.model_validate(order)
 
 
-    async def get_by_id(self, id: int) -> OrderDetailedViewDTO:
+    async def get_by_id(self, id: int) -> OrderDetailedView:
 
         order = await self.order_repository.get_by_id(
             id,
@@ -64,40 +64,40 @@ class OrderService:
         if order is None:
             raise OrderNotFoundError(id)
 
-        return OrderDetailedViewDTO.model_validate(order)
+        return OrderDetailedView.model_validate(order)
 
 
-    async def get_by_shop(self, shop_id: int) -> OrderListDTO:
+    async def get_by_shop(self, shop_id: int) -> OrderList:
 
         orders = await self.order_repository.get_shop_orders(shop_id)
         
-        return OrderListDTO(
+        return OrderList(
             count=len(orders),
-            items=[OrderViewDTO.model_validate(order) for order in orders]
+            items=[OrderView.model_validate(order) for order in orders]
         )
 
 
-    async def get_by_status(self, status: OrderStatus) -> OrderListDTO:
+    async def get_by_status(self, status: OrderStatus) -> OrderList:
 
         orders = await self.order_repository.get_orders_by_status(status)
         
-        return OrderListDTO(
+        return OrderList(
             count=len(orders),
-            items=[OrderViewDTO.model_validate(order) for order in orders]
+            items=[OrderView.model_validate(order) for order in orders]
         )
 
 
-    async def get_all(self) -> OrderListDTO:
+    async def get_all(self) -> OrderList:
 
         orders = await self.order_repository.get_all()
 
-        return OrderListDTO(
+        return OrderList(
             count=len(orders),
-            items=[OrderViewDTO.model_validate(order) for order in orders]
+            items=[OrderView.model_validate(order) for order in orders]
         )
 
 
-    async def update_status(self, id: int, status: OrderStatus) -> OrderViewDTO:
+    async def update_status(self, id: int, status: OrderStatus) -> OrderView:
 
         
         order = await self.order_repository.get_by_id(id)
@@ -110,4 +110,4 @@ class OrderService:
         async with self.session.begin():
             order = await self.order_repository.save(order)
 
-        return OrderViewDTO.model_validate(order)
+        return OrderView.model_validate(order)

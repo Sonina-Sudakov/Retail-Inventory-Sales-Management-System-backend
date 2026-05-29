@@ -7,8 +7,7 @@ from app.db.repositories.product import ProductRepository
 from app.db.repositories.sale import SaleRepository
 from app.db.repositories.shop import ShopRepository
 from app.db.repositories.user import UserRepository
-from app.schemas.sale import (SaleCreateDTO, SaleDetailedViewDTO, SaleListDTO,
-                              SaleViewDTO)
+from app.schemas.sale import SaleCreate, SaleDetailedView, SaleList, SaleView
 from app.services.exceptions import (EmptySaleError, ProductNotFoundError,
                                      SaleNotFoundError, ShopNotFoundError,
                                      UserNotFoundError)
@@ -31,7 +30,7 @@ class SaleService:
         self.product_repository = product_repository
 
 
-    async def create_sale(self, schema: SaleCreateDTO) -> SaleViewDTO:
+    async def create_sale(self, schema: SaleCreate) -> SaleView:
       
         if not schema.items:
             raise EmptySaleError()
@@ -70,10 +69,10 @@ class SaleService:
                     )
                 )
 
-        return SaleViewDTO.model_validate(sale)
+        return SaleView.model_validate(sale)
 
 
-    async def get_by_id(self, id: int) -> SaleDetailedViewDTO:
+    async def get_by_id(self, id: int) -> SaleDetailedView:
 
         sale = await self.sale_repository.get_by_id(
             id,
@@ -83,24 +82,24 @@ class SaleService:
         if sale is None:
             raise SaleNotFoundError(id)
 
-        return SaleDetailedViewDTO.model_validate(sale)
+        return SaleDetailedView.model_validate(sale)
 
 
-    async def get_by_shop(self, shop_id: int) -> SaleListDTO:
+    async def get_by_shop(self, shop_id: int) -> SaleList:
 
         sales = await self.sale_repository.get_shop_sales(shop_id)
         
-        return SaleListDTO(
+        return SaleList(
             count=len(sales),
-            items=[SaleViewDTO.model_validate(sale) for sale in sales]
+            items=[SaleView.model_validate(sale) for sale in sales]
         )
 
-    async def get_all(self) -> SaleListDTO:
+    async def get_all(self) -> SaleList:
 
         sales = await self.sale_repository.get_all()
 
-        return SaleListDTO(
+        return SaleList(
             count=len(sales),
-            items=[SaleViewDTO.model_validate(sale) for sale in sales]
+            items=[SaleView.model_validate(sale) for sale in sales]
         )
 

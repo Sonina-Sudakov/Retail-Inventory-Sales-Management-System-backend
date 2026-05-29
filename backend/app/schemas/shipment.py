@@ -2,62 +2,62 @@ from datetime import datetime
 
 from pydantic import BaseModel
 
-from app.schemas.product import ProductViewDTO
-from app.schemas.shop import ShopViewDTO
-from app.schemas.user import UserViewDTO
+from app.schemas.product import ProductView
+from app.schemas.shop import ShopView
+from app.schemas.user import UserView
 
 
-class ShipmentCreateDTO(BaseModel):
+class ShipmentCreate(BaseModel):
     from_location: str
     to_shop_id: int | None = None
     created_by_id: int
-    items: list[ShipmentItemCreateDTO]
+    items: list[ShipmentItemCreate]
 
 
-class ShipmentItemCreateDTO(BaseModel):
+class ShipmentItemCreate(BaseModel):
     product_id: int
     quantity: int
 
 
-class ShipmentDetailedViewDTO(BaseModel):
+class ShipmentDetailedView(BaseModel):
     id: int
     from_location: str
-    to_shop: ShopViewDTO | None = None
+    to_shop: ShopView | None = None
     status: str
-    created_by: UserViewDTO
-    accepted_by: UserViewDTO | None = None
+    created_by: UserView
+    accepted_by: UserView | None = None
     created_at: datetime
     updated_at: datetime | None = None
     count: int
-    items: list[ShipmentItemViewDTO]
+    items: list[ShipmentItemView]
 
 
-class ShipmentItemViewDTO(BaseModel):
+class ShipmentItemView(BaseModel):
     shipment_id: int
-    product: ProductViewDTO
+    product: ProductView
     quantity: int
 
 
-class ShipmentViewDTO(BaseModel):
+class ShipmentView(BaseModel):
     id: int
     from_location: str
-    to_shop: ShipmentShopViewDTO | None = None
+    to_shop: ShipmentShopView | None = None
     status: str
-    created_by: ShipmentUserViewDTO | None = None
+    created_by: ShipmentUserView | None = None
     created_at: datetime
     updated_at: datetime | None = None
 
 
-class ShipmentListDTO(BaseModel):
+class ShipmentList(BaseModel):
     count: int
-    items: list[ShipmentViewDTO]
+    items: list[ShipmentView]
 
 
-class ShipmentShopViewDTO(BaseModel):
+class ShipmentShopView(BaseModel):
     id: int
     name: str
 
 
-class ShipmentUserViewDTO(BaseModel):
+class ShipmentUserView(BaseModel):
     id: int
     fullname: str
