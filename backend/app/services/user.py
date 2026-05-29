@@ -1,10 +1,11 @@
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from app.db.models.user import User
 from app.db.repositories.user_repository import UserRepository
 from app.schemas.user import (UserCreateDTO, UserListDTO,
                               UserUpdateFullnameDTO, UserUpdatePasswordDTO,
                               UserViewDTO)
 from app.services.exceptions import UserAlreadyExistsError, UserNotFoundError
-from sqlalchemy.ext.asyncio import AsyncSession
 
 
 class UserService:
@@ -79,7 +80,7 @@ class UserService:
         return UserViewDTO.model_validate(user)
 
 
-    async def change_password(self, schema.UserUpdatePasswordDTO) -> UserViewDTO:
+    async def change_password(self, schema: UserUpdatePasswordDTO) -> UserViewDTO:
 
         user = await self.user_repository.get_by_id(schema.id)
         
