@@ -32,7 +32,7 @@ class Order(Base):
         lazy='raise'
     )
 
-    status: Mapped[str] = mapped_column(
+    status: Mapped[OrderStatus] = mapped_column(
         Enum(OrderStatus),
         default=OrderStatus.PENDING,
         nullable=False

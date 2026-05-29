@@ -14,7 +14,7 @@ class Shipment(Base):
         primary_key=True
     )
 
-    from_location: Mapped[str] = mapped_column(
+    from_location: Mapped[ShipmentFromLocation] = mapped_column(
         Enum(ShipmentFromLocation),
         nullable=False
     )
@@ -28,7 +28,7 @@ class Shipment(Base):
         lazy='raise'
     )
 
-    status: Mapped[str] = mapped_column(
+    status: Mapped[ShipmentStatus] = mapped_column(
         Enum(ShipmentStatus),
         default = ShipmentStatus.CREATED,
         nullable=False
