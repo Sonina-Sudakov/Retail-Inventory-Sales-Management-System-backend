@@ -8,13 +8,8 @@ engine = create_async_engine(
     echo=True,
 )
 
-AsyncSessionLocal = async_sessionmaker(
+async_session = async_sessionmaker(
     bind=engine,
     class_=AsyncSession,
     expire_on_commit=False,
 )
-
-
-async def get_session() -> AsyncSession:
-    async with AsyncSessionLocal() as session:
-        yield session
