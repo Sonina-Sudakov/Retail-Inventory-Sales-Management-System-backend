@@ -1,4 +1,5 @@
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.sql import select
 
 from app.db.models.user import User
 from app.db.repositories.base_repository import BaseRepository
@@ -19,7 +20,8 @@ class UserRepository(
         username: str
     ) -> User | None:
 
-        return await self.session.get(
-            self.model,
-            username
-        )
+        stmt = select(User).where(User.username == username)
+
+        result = await self.session.execute(stmt)
+
+        return result.scalar_one_or_none()
