@@ -1,4 +1,3 @@
-from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm.strategy_options import selectinload
 
 from app.db.models.shipment import Shipment
@@ -19,13 +18,11 @@ from app.services.exceptions import (EmptyShipmentError,
 class ShipmentService:
     def __init__(
             self, 
-            session: AsyncSession, 
             shipment_repository: ShipmentRepository, 
             shop_repository: ShopRepository,
             user_repository: UserRepository
         ):
         
-        self.session = session
         self.shipment_repository = shipment_repository
         self.shop_repository = shop_repository
         self.user_repository = user_repository
@@ -55,17 +52,16 @@ class ShipmentService:
         )
 
 
-        async with self.session.begin():
-            shipment = await self.shipment_repository.save(shipment)
+        shipment = await self.shipment_repository.save(shipment)
 
-            for item in schema.items:
-                await self.shipment_repository.save_shipment_item(
-                    ShipmentItem(
-                        shipment_id=shipment.id,
-                        product_id=item.product_id,
-                        quantity=item.quantity                    
-                    )
+        for item in schema.items:
+            await self.shipment_repository.save_shipment_item(
+                ShipmentItem(
+                    shipment_id=shipment.id,
+                    product_id=item.product_id,
+                    quantity=item.quantity                    
                 )
+            )
 
         return ShipmentView.model_validate(shipment)
 
@@ -123,8 +119,7 @@ class ShipmentService:
 
         shipment.status = status
 
-        async with self.session.begin():
-            shipment = await self.shipment_repository.save(shipment)
+        shipment = await self.shipment_repository.save(shipment)
 
         return ShipmentView.model_validate(shipment)
 
@@ -145,14 +140,13 @@ class ShipmentService:
         if user is None:
             raise UserNotFoundError(user_id)
 
-        if shipment.status == ShipmentStatus.CANCELLED:
+        if shipment.status == ShipmentStatus.CANCELED:
             raise ShipmentAlreadyCancelledError(id)
 
         shipment.status = ShipmentStatus.ACCEPTED
         shipment.accepted_by_id = user_id
 
-        async with self.session.begin():
-            shipment = await self.shipment_repository.save(shipment)
+        shipment = await self.shipment_repository.save(shipment)
 
         return ShipmentView.model_validate(shipment)
 
@@ -170,9 +164,8 @@ class ShipmentService:
         if shipment.status == ShipmentStatus.ACCEPTED:
             raise ShipmentAlreadyAcceptedError(id)
 
-        shipment.status = ShipmentStatus.CANCELLED
+        shipment.status = ShipmentStatus.CANCELED
 
-        async with self.session.begin():
-            shipment = await self.shipment_repository.save(shipment)
+        shipment = await self.shipment_repository.save(shipment)
 
         return ShipmentView.model_validate(shipment)

@@ -1,4 +1,3 @@
-from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm.strategy_options import selectinload
 
 from app.db.models.order import Order
@@ -15,12 +14,10 @@ from app.services.exceptions import (EmptyOrderError, OrderNotFoundError,
 class OrderService:
     def __init__(
             self, 
-            session: AsyncSession, 
             order_repository: OrderRepository, 
             shop_repository: ShopRepository
         ):
         
-        self.session = session
         self.order_repository = order_repository
         self.shop_repository = shop_repository
 
@@ -39,17 +36,16 @@ class OrderService:
             shop_id=schema.shop_id
         )
 
-        async with self.session.begin():
-            order = await self.order_repository.save(order)
+        order = await self.order_repository.save(order)
 
-            for item in schema.items:
-                await self.order_repository.save_order_item(
-                    OrderItem(
-                        order_id=order.id,
-                        product_id=item.product_id,
-                        quantity=item.quantity                    
-                    )
+        for item in schema.items:
+            await self.order_repository.save_order_item(
+                OrderItem(
+                    order_id=order.id,
+                    product_id=item.product_id,
+                    quantity=item.quantity                    
                 )
+            )
 
         return OrderView.model_validate(order)
 
@@ -107,7 +103,6 @@ class OrderService:
 
         order.status = status
 
-        async with self.session.begin():
-            order = await self.order_repository.save(order)
+        order = await self.order_repository.save(order)
 
         return OrderView.model_validate(order)

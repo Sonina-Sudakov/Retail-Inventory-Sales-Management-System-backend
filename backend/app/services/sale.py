@@ -1,4 +1,3 @@
-from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm.strategy_options import selectinload
 
 from app.db.models.sale import Sale
@@ -16,14 +15,12 @@ from app.services.exceptions import (EmptySaleError, ProductNotFoundError,
 class SaleService:
     def __init__(
             self, 
-            session: AsyncSession, 
             sale_repository: SaleRepository,
             shop_repository: ShopRepository,
             user_repository: UserRepository,
             product_repository: ProductRepository
         ):
 
-        self.session = session
         self.sale_repository = sale_repository
         self.shop_repository = shop_repository
         self.user_repository = user_repository
@@ -50,24 +47,23 @@ class SaleService:
             user_id=schema.user_id
         )
 
-        async with self.session.begin():
-            sale = await self.sale_repository.save(sale)
+        sale = await self.sale_repository.save(sale)
 
-            for item in schema.items:
+        for item in schema.items:
 
-                product = await self.product_repository.get_by_id(item.product_id)
+            product = await self.product_repository.get_by_id(item.product_id)
 
-                if product is None:
-                    raise ProductNotFoundError(item.product_id)
-                
-                await self.sale_repository.save_sale_item(
-                    SaleItem(
-                        sale_id=sale.id,
-                        product_id=item.product_id,
-                        quantity=item.quantity,
-                        price=item.price
-                    )
+            if product is None:
+                raise ProductNotFoundError(item.product_id)
+            
+            await self.sale_repository.save_sale_item(
+                SaleItem(
+                    sale_id=sale.id,
+                    product_id=item.product_id,
+                    quantity=item.quantity,
+                    price=item.price
                 )
+            )
 
         return SaleView.model_validate(sale)
 

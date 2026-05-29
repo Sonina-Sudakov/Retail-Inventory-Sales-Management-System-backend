@@ -1,5 +1,3 @@
-from sqlalchemy.ext.asyncio import AsyncSession
-
 from app.db.models.shop import Shop
 from app.db.repositories.shop import ShopRepository
 from app.schemas.shop import ShopCreate, ShopList, ShopUpdate, ShopView
@@ -7,9 +5,8 @@ from app.services.exceptions import ShopAlreadyExistsError, ShopNotFoundError
 
 
 class ShopService:
-    def __init__(self, session: AsyncSession, shop_repository: ShopRepository):
+    def __init__(self, shop_repository: ShopRepository):
 
-        self.session = session
         self.shop_repository = shop_repository
 
 
@@ -27,8 +24,7 @@ class ShopService:
             email=schema.email
         )
 
-        async with self.session.begin():
-            shop = await self.shop_repository.save(shop)
+        shop = await self.shop_repository.save(shop)
 
         return ShopView.model_validate(shop)
 
@@ -60,8 +56,7 @@ class ShopService:
         if shop is None:
             raise ShopNotFoundError(id)
 
-        async with self.session.begin():
-            await self.shop_repository.delete(shop)
+        await self.shop_repository.delete(shop)
     
 
     async def update(self, schema: ShopUpdate) -> ShopView:
@@ -77,7 +72,6 @@ class ShopService:
         shop.phone_number = schema.phone_number
         shop.email = schema.email
 
-        async with self.session.begin():
-            shop = await self.shop_repository.save(shop)
+        shop = await self.shop_repository.save(shop)
 
         return ShopView.model_validate(shop) 

@@ -1,5 +1,3 @@
-from sqlalchemy.ext.asyncio import AsyncSession
-
 from app.db.models.product import Product
 from app.db.repositories.product import ProductRepository
 from app.schemas.product import (ProductCreate, ProductList, ProductUpdate,
@@ -9,9 +7,8 @@ from app.services.exceptions import (ProductAlreadyExistsError,
 
 
 class ProductService:
-    def __init__(self, session: AsyncSession, product_repository: ProductRepository):
+    def __init__(self, product_repository: ProductRepository):
 
-        self.session = session
         self.product_repository = product_repository
 
 
@@ -29,8 +26,7 @@ class ProductService:
             price=schema.price
         )
 
-        async with self.session.begin():
-            product = await self.product_repository.save(product)
+        product = await self.product_repository.save(product)
 
         return ProductView.model_validate(product)
 
@@ -62,8 +58,7 @@ class ProductService:
         if product is None:
             raise ProductNotFoundError(id)
     
-        async with self.session.begin():
-            await self.product_repository.delete(product)
+        await self.product_repository.delete(product)
 
     
     async def update(self, schema: ProductUpdate) -> ProductView:
@@ -82,8 +77,7 @@ class ProductService:
         product.type_=schema.type_
         product.price=schema.price
 
-        async with self.session.begin():
-            product = await self.product_repository.save(product)
+        product = await self.product_repository.save(product)
 
         return ProductView.model_validate(product)
 

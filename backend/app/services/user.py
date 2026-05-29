@@ -1,5 +1,3 @@
-from sqlalchemy.ext.asyncio import AsyncSession
-
 from app.db.models.user import User
 from app.db.repositories.user import UserRepository
 from app.schemas.user import (UserCreate, UserList, UserUpdateFullname,
@@ -8,9 +6,8 @@ from app.services.exceptions import UserAlreadyExistsError, UserNotFoundError
 
 
 class UserService:
-    def __init__(self, session: AsyncSession, user_repository: UserRepository):
+    def __init__(self, user_repository: UserRepository):
 
-        self.session = session
         self.user_repository = user_repository
         
 
@@ -27,8 +24,7 @@ class UserService:
             role=schema.role
         )
 
-        async with self.session.begin():
-            user = await self.user_repository.save(user)
+        user = await self.user_repository.save(user)
 
         return UserView.model_validate(user)
 
@@ -60,8 +56,7 @@ class UserService:
         if user is None:
             raise UserNotFoundError(id)
     
-        async with self.session.begin():
-            await self.user_repository.delete(user)
+        await self.user_repository.delete(user)
 
 
     async def change_fullname(self, schema: UserUpdateFullname) -> UserView:
@@ -73,8 +68,7 @@ class UserService:
 
         user.fullname = schema.fullname
         
-        async with self.session.begin():
-            user = await self.user_repository.save(user)
+        user = await self.user_repository.save(user)
 
         return UserView.model_validate(user)
 
@@ -88,7 +82,6 @@ class UserService:
 
         user.hash_password = schema.password # TODO add bcrypt
         
-        async with self.session.begin():
-            user = await self.user_repository.save(user)
+        user = await self.user_repository.save(user)
 
         return UserView.model_validate(user)
