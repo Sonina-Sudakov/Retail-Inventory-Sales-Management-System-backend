@@ -2,7 +2,8 @@ from app.db.models.user import User
 from app.db.repositories.user import UserRepository
 from app.schemas.user import (UserCreate, UserList, UserUpdateFullname,
                               UserUpdatePassword, UserView)
-from app.services.exceptions import UserAlreadyExistsError, UserNotFoundError
+from app.services.exceptions import (UserAlreadyExistsError, UserNotFoundError,
+                                     UserPasswordsMismatchError)
 
 
 class UserService:
@@ -66,7 +67,7 @@ class UserService:
         if user is None:
             raise UserNotFoundError(schema.id)
 
-        user.fullname = schema.fullname
+        user.fullname = schema.new_fullname
         
         user = await self.user_repository.save(user)
 
@@ -80,7 +81,10 @@ class UserService:
         if user is None:
             raise UserNotFoundError(schema.id)
 
-        user.hash_password = schema.password # TODO add bcrypt
+        if user.hash_password != schema.old_password:
+            raise UserPasswordsMismatchError(user.username)
+
+        user.hash_password = schema.new_password # TODO add bcrypt
         
         user = await self.user_repository.save(user)
 

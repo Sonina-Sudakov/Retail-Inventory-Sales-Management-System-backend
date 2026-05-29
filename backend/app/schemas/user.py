@@ -1,6 +1,5 @@
-from pydantic import BaseModel, ConfigDict
-
 from app.enums import UserRole
+from pydantic import BaseModel, ConfigDict
 
 
 class UserBaseModel(BaseModel):
@@ -28,9 +27,10 @@ class UserList(UserBaseModel):
 
 class UserUpdatePassword(UserBaseModel):
     id: int
-    password: str
+    old_password: str
+    new_password: str
 
 
 class UserUpdateFullname(UserBaseModel):
     id: int
-    fullname: str
+    new_fullname: str
