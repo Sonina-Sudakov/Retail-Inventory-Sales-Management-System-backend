@@ -50,6 +50,11 @@ class OrderNotFoundError(Exception):
         self.order_id = order_id
 
 
+class OrderIsNotPendingError(Exception):
+    def __init__(self, order_id: int):
+        self.order_id = order_id
+
+
 class EmptyOrderError(Exception):
     def __init__(self):
         super().__init__(
