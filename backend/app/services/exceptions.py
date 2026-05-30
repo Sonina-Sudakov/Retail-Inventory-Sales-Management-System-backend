@@ -83,3 +83,27 @@ class ShipmentAlreadyCancelledError(Exception):
             "Shipment is already canceled and cannot be accepted"
         )
         self.shipment_id = shipment_id
+
+
+class ShopStockNotFoundError(Exception):
+    def __init__(self, shop_id, product_id):
+        self.shop_id = shop_id
+        self.product_id = product_id
+
+
+class InsufficientStockError(Exception):
+    def __init__(self, shop_id, product_id, quantity, change):
+        self.shop_id = shop_id
+        self.product_id = product_id
+        self.quantity = quantity 
+        self.change = change 
+
+
+class InvalidQuantityError(Exception):
+    def __init__(self, min_quantity):
+        self.min_quantity = min_quantity
+
+
+class InvalidMinQuantityError(Exception):
+    def __init__(self, min_quantity):
+        self.min_quantity = min_quantity
