@@ -1,21 +1,13 @@
 from fastapi import Request
 from fastapi.responses import JSONResponse
 
-<<<<<<< HEAD
 from app.services.exceptions import (ProductAlreadyExistsError,
                                      ProductNotFoundError,
                                      UserAlreadyExistsError, UserNotFoundError,
-                                     UserPasswordsMismatchError)
-
-=======
-from app.services.exceptions import (ShopAlreadyExistsError, ShopNotFoundError,
-                                     UserAlreadyExistsError, UserNotFoundError,
-                                     UserPasswordsMismatchError)
-
->>>>>>> 44e1fec (feat(api): implement shop api)
-
-# ---[[ USER ]]---
-
+                                     UserPasswordsMismatchError, ShopAlreadyExistsError, 
+                                     ShopNotFoundError, OrderNotFoundError, EmptyOrderError,
+                                     OrderIsNotPendingError)
+ 
 
 async def user_not_found_handler(
     request: Request,
@@ -59,9 +51,6 @@ async def passwords_mismatch_handler(
     )
 
 
-# ---[[ PRODUCT ]]---
-
-
 async def product_not_found_handler(
     request: Request,
     exc: ProductNotFoundError
@@ -87,8 +76,6 @@ async def product_already_exists_handler(
         }
     )
 
-
-# ---[[ SHOP ]]---
 
 async def shop_not_found_handler(
     request: Request,
@@ -116,3 +103,43 @@ async def shop_already_exists_handler(
                 f"Shop with the same data (phone number = {exc.phone_number} or email = {exc.email}) already exists"
         }
     )
+
+
+async def order_not_found_handler(
+    request: Request,
+    exc: OrderNotFoundError
+):
+    return JSONResponse(
+        status_code=404,
+        content={
+            "message":
+                f"Order with id = {exc.order_id} doesn't exist"
+        }
+    )
+
+
+async def order_is_not_pending_handler(
+    request: Request,
+    exc: OrderIsNotPendingError
+):
+    return JSONResponse(
+        status_code=409,
+        content={
+            "message":
+                f"Order with id = {exc.order_id} isn't pending"
+        }
+    )
+
+
+async def empty_order_handler(
+    request: Request,
+    exc: EmptyOrderError
+):
+    return JSONResponse(
+        status_code=400,
+        content={
+            "message":
+                f"Order must contain at least one item"
+        }
+    )
+
