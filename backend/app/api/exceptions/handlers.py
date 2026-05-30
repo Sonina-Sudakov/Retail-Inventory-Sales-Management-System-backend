@@ -1,18 +1,11 @@
 from fastapi import Request
 from fastapi.responses import JSONResponse
 
-<<<<<<< HEAD
 from app.services.exceptions import (ProductAlreadyExistsError,
                                      ProductNotFoundError,
+                                     ShopAlreadyExistsError, ShopNotFoundError,
                                      UserAlreadyExistsError, UserNotFoundError,
                                      UserPasswordsMismatchError)
-
-=======
-from app.services.exceptions import (ShopAlreadyExistsError, ShopNotFoundError,
-                                     UserAlreadyExistsError, UserNotFoundError,
-                                     UserPasswordsMismatchError)
-
->>>>>>> 44e1fec (feat(api): implement shop api)
 
 # ---[[ USER ]]---
 
