@@ -1,9 +1,20 @@
 from fastapi import Request
 from fastapi.responses import JSONResponse
 
-from app.services.exceptions import (UserAlreadyExistsError, UserNotFoundError,
-                                     UserPasswordsMismatchError, ProductNotFoundError,
-                                     ProductAlreadyExistsError)
+<<<<<<< HEAD
+from app.services.exceptions import (ProductAlreadyExistsError,
+                                     ProductNotFoundError,
+                                     UserAlreadyExistsError, UserNotFoundError,
+                                     UserPasswordsMismatchError)
+
+=======
+from app.services.exceptions import (ShopAlreadyExistsError, ShopNotFoundError,
+                                     UserAlreadyExistsError, UserNotFoundError,
+                                     UserPasswordsMismatchError)
+
+>>>>>>> 44e1fec (feat(api): implement shop api)
+
+# ---[[ USER ]]---
 
 
 async def user_not_found_handler(
@@ -48,11 +59,13 @@ async def passwords_mismatch_handler(
     )
 
 
+# ---[[ PRODUCT ]]---
+
+
 async def product_not_found_handler(
     request: Request,
     exc: ProductNotFoundError
 ):
-
     return JSONResponse(
         status_code=404,
         content={
@@ -66,11 +79,40 @@ async def product_already_exists_handler(
     request: Request,
     exc: ProductAlreadyExistsError
 ):
-
     return JSONResponse(
         status_code=409,
         content={
             "message":
                 f"Product with name = {exc.name} already exists"
+        }
+    )
+
+
+# ---[[ SHOP ]]---
+
+async def shop_not_found_handler(
+    request: Request,
+    exc: ShopNotFoundError
+):
+
+    return JSONResponse(
+        status_code=404,
+        content={
+            "message":
+                f"Shop with id = {exc.shop_id} doesn't exist"
+        }
+    )
+
+
+async def shop_already_exists_handler(
+    request: Request,
+    exc: ShopAlreadyExistsError
+):
+
+    return JSONResponse(
+        status_code=409,
+        content={
+            "message":
+                f"Shop with the same data (phone number = {exc.phone_number} or email = {exc.email}) already exists"
         }
     )

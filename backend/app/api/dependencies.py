@@ -1,11 +1,13 @@
-from app.db.dependencies import get_session
-from app.db.repositories.user import UserRepository
-from app.services.user import UserService
-from app.db.repositories.product import ProductRepository
-from app.services.product import ProductService
-
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.db.dependencies import get_session
+from app.db.repositories.product import ProductRepository
+from app.db.repositories.shop import ShopRepository
+from app.db.repositories.user import UserRepository
+from app.services.product import ProductService
+from app.services.shop import ShopService
+from app.services.user import UserService
 
 
 async def get_user_repository(
@@ -34,3 +36,17 @@ async def get_product_service(
 ) -> ProductService:
 
     return ProductService(repository)
+
+
+async def get_shop_repository(
+    session: AsyncSession = Depends(get_session)
+) -> ShopRepository:
+
+    return ShopRepository(session)
+
+
+async def get_shop_service(
+    repository: ShopRepository = Depends(get_shop_repository)
+) -> ShopService:
+
+    return ShopService(repository)
