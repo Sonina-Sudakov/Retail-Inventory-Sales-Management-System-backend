@@ -1,14 +1,18 @@
+from datetime import datetime, timezone
 from sqlalchemy.orm.strategy_options import selectinload
 
 from app.db.models.order import Order
 from app.db.models.order_item import OrderItem
 from app.db.repositories.order import OrderRepository
 from app.db.repositories.shop import ShopRepository
+from app.db.repositories.product import ProductRepository
+from app.db.repositories.user import UserRepository
 from app.enums import OrderStatus
 from app.schemas.order import (OrderCreate, OrderDetailedView, OrderList,
                                OrderView)
 from app.services.exceptions import (EmptyOrderError, OrderNotFoundError,
-                                     ProductNotFoundError, ShopNotFoundError)
+                                     ProductNotFoundError, ShopNotFoundError,
+                                     UserNotFoundError, OrderIsNotPendingError)
 
 
 class OrderService:
@@ -16,12 +20,14 @@ class OrderService:
             self, 
             order_repository: OrderRepository, 
             shop_repository: ShopRepository,
-            product_repository: ProductRepository
+            product_repository: ProductRepository,
+            user_repository: UserRepository
         ):
         
         self.order_repository = order_repository
         self.shop_repository = shop_repository
         self.product_repository = product_repository
+        self.user_repository = user_repository
 
 
     async def create_order(self, schema: OrderCreate) -> OrderView:
@@ -29,10 +35,15 @@ class OrderService:
         if not schema.items:
             raise EmptyOrderError() 
 
-        shop = await self.shop_repository.get_by_id(schema.shop_id)
+        shop = await self.shop_repository.get_by_id(schema.to_shop_id)
 
         if shop is None:
-            raise ShopNotFoundError(schema.shop_id)
+            raise ShopNotFoundError(schema.to_shop_id)
+
+        user = await self.user_repository.get_by_id(schema.created_by_id)
+
+        if user is None:
+            raise UserNotFoundError(schema.created_by_id)
 
         for item in schema.items:
 
@@ -42,7 +53,9 @@ class OrderService:
                 raise ProductNotFoundError(item.product_id)
 
         order = Order(
-            shop_id=schema.shop_id,
+            to_shop_id=schema.to_shop_id,
+            created_by_id=schema.created_by_id,
+            
             items=[
                 OrderItem(
                     product_id=item.product_id,
@@ -54,14 +67,18 @@ class OrderService:
 
         order = await self.order_repository.save(order)
 
-        return OrderView.model_validate(order)
+        return OrderView.model_validate(await self.load_full_order_(order.id))
 
 
     async def get_by_id(self, id: int) -> OrderDetailedView:
 
         order = await self.order_repository.get_by_id(
             id,
-            options=[selectinload(Order.items)]
+            options=[
+                selectinload(Order.to_shop),
+                selectinload(Order.created_by),
+                selectinload(Order.items).selectinload(OrderItem.product),
+            ]
         )
         
         if order is None:
@@ -92,7 +109,12 @@ class OrderService:
 
     async def get_all(self) -> OrderList:
 
-        orders = await self.order_repository.get_all()
+        orders = await self.order_repository.get_all(
+            options=[
+                selectinload(Order.created_by),
+                selectinload(Order.to_shop)
+            ]
+        )
 
         return OrderList(
             count=len(orders),
@@ -100,9 +122,44 @@ class OrderService:
         )
 
 
-    async def update_status(self, id: int, status: OrderStatus) -> OrderView:
+    async def accept_order(self, id: int) -> OrderView:
 
-        
+        order = await self.order_repository.get_by_id(id)
+
+        if order.status != OrderStatus.PENDING:
+            raise OrderIsNotPendingError(id)
+
+        order = await self.update_status_(id, OrderStatus.ACCEPTED)
+
+        order.accepted_at = datetime.now(timezone.utc)
+
+        return order
+
+
+    async def cancel_order(self, id: int) -> OrderView:
+
+        order = await self.order_repository.get_by_id(id)
+
+        if order.status != OrderStatus.PENDING:
+            raise OrderIsNotPendingError(id)
+
+
+        return await self.update_status_(id, OrderStatus.CANCELED)
+    
+
+    async def load_full_order_(self, id: int) -> Order | None:
+
+        return await self.order_repository.get_by_id(
+            id,
+            options=[
+                selectinload(Order.to_shop),
+                selectinload(Order.created_by)
+            ]
+        )
+
+
+    async def update_status_(self, id: int, status: OrderStatus) -> OrderView:
+
         order = await self.order_repository.get_by_id(id)
 
         if order is None:
@@ -112,4 +169,4 @@ class OrderService:
 
         order = await self.order_repository.save(order)
 
-        return OrderView.model_validate(order)
+        return OrderView.model_validate(await self.load_full_order_(id))

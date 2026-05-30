@@ -26,11 +26,17 @@ class BaseRepository(
         options: Sequence[ORMOption] | None = None
     ) -> ModelType | None:
 
-        return await self.session.get(
-            self.model,
-            id,
-            options=options
+        stmt = (
+            select(self.model)
+            .where(self.model.id == id)
         )
+
+        if options:
+            stmt = stmt.options(*options)
+
+        result = await self.session.execute(stmt)
+
+        return result.scalar_one_or_none()
 
 
     async def get_all(
