@@ -12,7 +12,7 @@ class OrderBaseModel(BaseModel):
 
 
 class OrderCreate(OrderBaseModel):
-    shop_id: int 
+    to_shop_id: int 
     created_by_id: int
     count: int
     items: list[OrderItemCreate]
@@ -23,47 +23,41 @@ class OrderItemCreate(OrderBaseModel):
     quantity: int
 
 
-class OrderDetailedView(BaseModel):
+class OrderDetailedView(OrderBaseModel):
     id: int
-    shop: ShopView
+    to_shop: ShopView
     created_by: UserView
     status: str
     created_at: datetime
     accepted_at: datetime | None = None
-    count: int
     items: list[OrderItemView]
 
 
-class OrderItemView(BaseModel):
+class OrderItemView(OrderBaseModel):
     order_id: int
     product: ProductView
     quantity: int
 
 
-class OrderView(BaseModel):
+class OrderView(OrderBaseModel):
     id: int
-    shop: OrderShopView
+    to_shop: OrderShopView
     created_by: OrderUserView
     status: str
     created_at: datetime
     accepted_at: datetime | None = None
 
 
-class OrderList(BaseModel):
+class OrderList(OrderBaseModel):
     count: int
     items: list[OrderView]
 
 
-class OrderUpdateStatus(BaseModel):
-    id: int
-    status: str
-
-
-class OrderShopView(BaseModel):
+class OrderShopView(OrderBaseModel):
     id: int
     name: str
 
 
-class OrderUserView(BaseModel):
+class OrderUserView(OrderBaseModel):
     id: int
     fullname: str
