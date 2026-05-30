@@ -29,8 +29,9 @@ class ShopNotFoundError(Exception):
 
 
 class ShopAlreadyExistsError(Exception):
-    def __init__(self, phone_number: str):
+    def __init__(self, phone_number: str, email: str):
         self.phone_number = phone_number
+        self.email = email
 
 
 class SaleNotFoundError(Exception):

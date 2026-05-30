@@ -1,3 +1,5 @@
+from sqlalchemy.exc import IntegrityError
+
 from app.db.models.shop import Shop
 from app.db.repositories.shop import ShopRepository
 from app.schemas.shop import ShopCreate, ShopList, ShopUpdate, ShopView
@@ -12,21 +14,20 @@ class ShopService:
 
     async def create_shop(self, schema: ShopCreate) -> ShopView:
        
-        shop = await self.shop_repository.get_by_phone_number(schema.phone_number)
-        if shop is not None:
-            raise ShopAlreadyExistsError(schema.phone_number)
+        try:
+            shop = Shop(
+                name=schema.name,
+                address=schema.address,
+                contact_face=schema.contact_face,
+                phone_number=schema.phone_number,
+                email=schema.email
+            )
 
-        shop = Shop(
-            name=schema.name,
-            address=schema.address,
-            contact_face=schema.contact_face,
-            phone_number=schema.phone_number,
-            email=schema.email
-        )
+            shop = await self.shop_repository.save(shop)
 
-        shop = await self.shop_repository.save(shop)
-
-        return ShopView.model_validate(shop)
+            return ShopView.model_validate(shop)
+        except IntegrityError:
+            raise ShopAlreadyExistsError(schema.phone_number, schema.email)
 
 
     async def get_by_id(self, id: int) -> ShopView:
