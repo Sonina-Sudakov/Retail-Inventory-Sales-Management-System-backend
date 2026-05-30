@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio.session import AsyncSession
+from sqlalchemy.orm import selectinload
 from sqlalchemy.sql.expression import select
 
-from app.db.models.product import Product
 from app.db.models.warehouse_stock import WarehouseStock
 from app.db.repositories.base import BaseRepository
 
@@ -23,12 +23,11 @@ class WarehouseStockRepository(
         
         stmt = (
             select(
-                WarehouseStock,
-                Product.name,
-                Product.unit
+                WarehouseStock
             )
-            .join(Product)
-            .where(WarehouseStock.product_id == product_id))
+            .where(WarehouseStock.product_id == product_id)
+            .options(selectinload(WarehouseStock.product))
+        )
 
         result = await self.session.execute(stmt)
 
@@ -42,10 +41,8 @@ class WarehouseStockRepository(
         stmt = (
             select(
                 WarehouseStock,
-                Product.name,
-                Product.unit
             )
-            .join(Product)
+            .options(selectinload(WarehouseStock.product))
         )
 
         result = await self.session.execute(stmt)
