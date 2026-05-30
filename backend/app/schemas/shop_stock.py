@@ -1,34 +1,37 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 from app.schemas.product import ProductView
 
 
-class ShopStockCreate(BaseModel):
+class ShopStockBaseModel(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+class ShopStockCreate(ShopStockBaseModel):
     shop_id: int
     product_id: int
     min_quantity: int
     quantity: int
 
 
-class ShopStockView(BaseModel):
+class ShopStockView(ShopStockBaseModel):
     product: ProductView
     min_quantity: int
     quantity: int
 
 
-class ShopStockUpdate(BaseModel):
+class ShopStockUpdate(ShopStockBaseModel):
     shop_id: int
     product_id: int
     min_quantity: int
     quantity: int
 
 
-class ShopStockList(BaseModel):
+class ShopStockList(ShopStockBaseModel):
     shop: ShopStockShopView
     count: int
     items: list[ShopStockView]
 
 
-class ShopStockShopView(BaseModel):
+class ShopStockShopView(ShopStockBaseModel):
     id: int
     name: str

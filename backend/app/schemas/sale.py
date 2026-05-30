@@ -1,27 +1,31 @@
 from datetime import datetime
 from decimal import Decimal
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 from app.schemas.product import ProductView
 from app.schemas.shop import ShopView
 from app.schemas.user import UserView
 
 
-class SaleCreate(BaseModel):
+class SaleBaseModel(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+
+class SaleCreate(SaleBaseModel):
     shop_id: int
     user_id: int
     count: int
     items: list[SaleItemCreate] 
 
 
-class SaleItemCreate(BaseModel):
+class SaleItemCreate(SaleBaseModel):
     product_id: int
     quantity: int
     price: Decimal
 
 
-class SaleDetailedView(BaseModel):
+class SaleDetailedView(SaleBaseModel):
     id: int
     shop: ShopView
     user: UserView
@@ -30,30 +34,30 @@ class SaleDetailedView(BaseModel):
     created_at: datetime
 
 
-class SaleItemView(BaseModel):
+class SaleItemView(SaleBaseModel):
     sale_id: int
     product: ProductView
     quantity: int
     price: Decimal
 
 
-class SaleView(BaseModel):
+class SaleView(SaleBaseModel):
     id: int
     shop: SaleShopView
     user: SaleUserView
     created_at: datetime
 
 
-class SaleList(BaseModel):
+class SaleList(SaleBaseModel):
     count: int
     items: list[SaleView]
 
 
-class SaleShopView(BaseModel):
+class SaleShopView(SaleBaseModel):
     id: int
     name: str
 
 
-class SaleUserView(BaseModel):
+class SaleUserView(SaleBaseModel):
     id: int
     fullname: str

@@ -1,28 +1,32 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 from app.schemas.product import ProductView
 
 
-class WarehouseStockCreate(BaseModel):
+class WarehouseStockBaseModel(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+
+class WarehouseStockCreate(WarehouseStockBaseModel):
     cell_code: str
     product_id: int
     quantity: int
 
 
-class WarehouseStockView(BaseModel):
+class WarehouseStockView(WarehouseStockBaseModel):
     id: int
     cell_code: str
     product_id: ProductView
     quantity: int
 
 
-class WarehouseStockUpdate(BaseModel):
+class WarehouseStockUpdate(WarehouseStockBaseModel):
     id: int
     cell_code: str
     product_id: int
     quantity: int
 
 
-class WarehouseStockList(BaseModel):    
+class WarehouseStockList(WarehouseStockBaseModel):
     count: int
     items: list[WarehouseStockView]

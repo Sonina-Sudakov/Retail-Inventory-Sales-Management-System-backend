@@ -1,25 +1,29 @@
 from datetime import datetime
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 from app.schemas.product import ProductView
 from app.schemas.shop import ShopView
 from app.schemas.user import UserView
 
 
-class ShipmentCreate(BaseModel):
+class ShipmentBaseModel(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+
+class ShipmentCreate(ShipmentBaseModel):
     from_location: str
     to_shop_id: int | None = None
     created_by_id: int
     items: list[ShipmentItemCreate]
 
 
-class ShipmentItemCreate(BaseModel):
+class ShipmentItemCreate(ShipmentBaseModel):
     product_id: int
     quantity: int
 
 
-class ShipmentDetailedView(BaseModel):
+class ShipmentDetailedView(ShipmentBaseModel):
     id: int
     from_location: str
     to_shop: ShopView | None = None
@@ -32,13 +36,13 @@ class ShipmentDetailedView(BaseModel):
     items: list[ShipmentItemView]
 
 
-class ShipmentItemView(BaseModel):
+class ShipmentItemView(ShipmentBaseModel):
     shipment_id: int
     product: ProductView
     quantity: int
 
 
-class ShipmentView(BaseModel):
+class ShipmentView(ShipmentBaseModel):
     id: int
     from_location: str
     to_shop: ShipmentShopView | None = None
@@ -48,16 +52,16 @@ class ShipmentView(BaseModel):
     updated_at: datetime | None = None
 
 
-class ShipmentList(BaseModel):
+class ShipmentList(ShipmentBaseModel):
     count: int
     items: list[ShipmentView]
 
 
-class ShipmentShopView(BaseModel):
+class ShipmentShopView(ShipmentBaseModel):
     id: int
     name: str
 
 
-class ShipmentUserView(BaseModel):
+class ShipmentUserView(ShipmentBaseModel):
     id: int
     fullname: str

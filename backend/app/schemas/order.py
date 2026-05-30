@@ -1,20 +1,24 @@
 from datetime import datetime
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 from app.schemas.product import ProductView
 from app.schemas.shop import ShopView
 from app.schemas.user import UserView
 
 
-class OrderCreate(BaseModel):
+class OrderBaseModel(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+
+class OrderCreate(OrderBaseModel):
     shop_id: int 
     created_by_id: int
     count: int
     items: list[OrderItemCreate]
 
 
-class OrderItemCreate(BaseModel):
+class OrderItemCreate(OrderBaseModel):
     product_id: int
     quantity: int
 
