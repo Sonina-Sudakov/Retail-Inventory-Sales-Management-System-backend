@@ -2,7 +2,8 @@ from fastapi import Request
 from fastapi.responses import JSONResponse
 
 from app.services.exceptions import (UserAlreadyExistsError, UserNotFoundError,
-                                     UserPasswordsMismatchError)
+                                     UserPasswordsMismatchError, ProductNotFoundError,
+                                     ProductAlreadyExistsError)
 
 
 async def user_not_found_handler(
@@ -43,5 +44,33 @@ async def passwords_mismatch_handler(
         content={
             "message":
                 f"Wrong old password for user {exc.username}"
+        }
+    )
+
+
+async def product_not_found_handler(
+    request: Request,
+    exc: ProductNotFoundError
+):
+
+    return JSONResponse(
+        status_code=404,
+        content={
+            "message":
+                f"Product with id = {exc.product_id} doesn't exist"
+        }
+    )
+
+
+async def product_already_exists_handler(
+    request: Request,
+    exc: ProductAlreadyExistsError
+):
+
+    return JSONResponse(
+        status_code=409,
+        content={
+            "message":
+                f"Product with name = {exc.name} already exists"
         }
     )
