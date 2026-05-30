@@ -4,11 +4,14 @@ from app.db.models.order import Order
 from app.db.models.order_item import OrderItem
 from app.db.repositories.order import OrderRepository
 from app.db.repositories.shop import ShopRepository
+from app.db.repositories.product import ProductRepository
+from app.db.repositories.user import UserRepository
 from app.enums import OrderStatus
 from app.schemas.order import (OrderCreate, OrderDetailedView, OrderList,
                                OrderView)
 from app.services.exceptions import (EmptyOrderError, OrderNotFoundError,
-                                     ProductNotFoundError, ShopNotFoundError)
+                                     ProductNotFoundError, ShopNotFoundError,
+                                     UserNotFoundError)
 
 
 class OrderService:
@@ -16,12 +19,14 @@ class OrderService:
             self, 
             order_repository: OrderRepository, 
             shop_repository: ShopRepository,
-            product_repository: ProductRepository
+            product_repository: ProductRepository,
+            user_repository: UserRepository
         ):
         
         self.order_repository = order_repository
         self.shop_repository = shop_repository
         self.product_repository = product_repository
+        self.user_repository = user_repository
 
 
     async def create_order(self, schema: OrderCreate) -> OrderView:
@@ -33,6 +38,11 @@ class OrderService:
 
         if shop is None:
             raise ShopNotFoundError(schema.shop_id)
+
+        user = await self.user_repository.get_by_id(schema.created_by_id)
+
+        if user is None:
+            raise UserNotFoundError(schema.created_by_id)
 
         for item in schema.items:
 
