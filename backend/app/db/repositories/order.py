@@ -1,4 +1,4 @@
-from enums import OrderStatus
+from app.enums import OrderStatus
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql.expression import select
 
