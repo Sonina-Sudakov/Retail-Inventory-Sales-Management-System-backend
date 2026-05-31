@@ -56,7 +56,7 @@ class ShopStockList(ShopStockBaseModel):
 class UpdateShopStockQuantity(ShopStockBaseModel):
     shop_id: int
     product_id: int 
-    quantity: int
+    change: int
 
 
 class UpdateShopStockMinQuantity(ShopStockBaseModel):

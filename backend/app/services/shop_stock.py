@@ -7,7 +7,8 @@ from app.schemas.shop import ShopView
 from app.schemas.shop_stock import (ProductInShopsView, ShopStockCreate,
                                     ShopStockList, ShopStockView,
                                     ShopStockWithProductView,
-                                    ShopStockWithShopView)
+                                    ShopStockWithShopView,
+                                    UpdateShopStockQuantity)
 from app.services.exceptions import (InsufficientShopStockError,
                                      InvalidMinQuantityError,
                                      InvalidQuantityError,
@@ -58,16 +59,14 @@ class ShopStockService:
 
     async def increase_stock_quantity(
         self,
-        shop_id: int,
-        product_id: int,
-        change: int
+        schema: UpdateShopStockQuantity
         ) -> ShopStockView:
 
-        await self.check_shop_and_product_existance_(shop_id, product_id)
+        await self.check_shop_and_product_existance_(schema.shop_id, schema.product_id)
 
-        model = await self.load_stock_(shop_id, product_id)
+        model = await self.load_stock_(schema.shop_id, schema.product_id)
 
-        model.quantity += change
+        model.quantity += schema.change
 
         model = await self.shop_stock_repository.save(model)
 
@@ -76,19 +75,17 @@ class ShopStockService:
 
     async def decrease_stock_quantity(
         self,
-        shop_id: int,
-        product_id: int,
-        change: int
+        schema: UpdateShopStockQuantity
         ) -> ShopStockView:
 
-        await self.check_shop_and_product_existance_(shop_id, product_id)
+        await self.check_shop_and_product_existance_(schema.shop_id, schema.product_id)
 
-        model = await self.load_stock_(shop_id, product_id)
+        model = await self.load_stock_(schema.shop_id, schema.product_id)
 
-        if model.quantity - change < 0:
-            raise InsufficientShopStockError(shop_id, product_id, model.quantity, change)
+        if model.quantity - schema.change < 0:
+            raise InsufficientShopStockError(schema.shop_id, schema.product_id, model.quantity, schema.change)
 
-        model.quantity -= change
+        model.quantity -= schema.change
 
         model = await self.shop_stock_repository.save(model)
 
