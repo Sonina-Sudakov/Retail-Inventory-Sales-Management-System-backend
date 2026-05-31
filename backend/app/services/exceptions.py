@@ -114,6 +114,11 @@ class InvalidMinQuantityError(Exception):
         self.min_quantity = min_quantity
 
 
-class WarehouseStockAlreadyExists(Exception):
+class WarehouseStockAlreadyExistsError(Exception):
     def __init__(self, cell_code):
         self.cell_code = cell_code
+
+
+class WarehouseStockNotFoundError(Exception):
+    def __init__(self, id):
+        self.id = id
