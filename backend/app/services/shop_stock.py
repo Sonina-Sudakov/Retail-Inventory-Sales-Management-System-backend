@@ -34,7 +34,7 @@ class ShopStockService:
         schema: ShopStockCreate
     ) -> ShopStockView:
 
-        await self.check_shop_and_product_existance(schema.shop_id, schema.product_id)
+        await self.check_shop_and_product_existance_(schema.shop_id, schema.product_id)
 
         if schema.min_quantity < 0:
             raise InvalidMinQuantityError(schema.min_quantity)
@@ -63,7 +63,7 @@ class ShopStockService:
         change: int
         ) -> ShopStockView:
 
-        await self.check_shop_and_product_existance(shop_id, product_id)
+        await self.check_shop_and_product_existance_(shop_id, product_id)
 
         model = await self.load_stock_(shop_id, product_id)
 
@@ -81,7 +81,7 @@ class ShopStockService:
         change: int
         ) -> ShopStockView:
 
-        await self.check_shop_and_product_existance(shop_id, product_id)
+        await self.check_shop_and_product_existance_(shop_id, product_id)
 
         model = await self.load_stock_(shop_id, product_id)
 
@@ -102,7 +102,7 @@ class ShopStockService:
         min_quantity: int
     ) -> ShopStockView:
 
-        await self.check_shop_and_product_existance(shop_id, product_id)
+        await self.check_shop_and_product_existance_(shop_id, product_id)
 
         model = await self.load_stock_(shop_id, product_id)
 
@@ -166,7 +166,7 @@ class ShopStockService:
         product_id: int
     ) -> ShopStockView:
 
-        await self.check_shop_and_product_existance(shop_id, product_id)
+        await self.check_shop_and_product_existance_(shop_id, product_id)
 
         return ShopStockView.model_validate(await self.load_stock_(shop_id, product_id))
 
@@ -177,14 +177,14 @@ class ShopStockService:
         product_id: int
     ) -> None:
 
-        await self.check_shop_and_product_existance(shop_id, product_id)
+        await self.check_shop_and_product_existance_(shop_id, product_id)
 
         model = await self.load_stock_(shop_id, product_id)
 
         await self.shop_stock_repository.delete(model)
 
 
-    async def check_shop_and_product_existance(
+    async def check_shop_and_product_existance_(
         self,
         shop_id: int,
         product_id: int
