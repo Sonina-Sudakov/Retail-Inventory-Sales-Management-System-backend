@@ -38,7 +38,7 @@ async def delete_user_by_id(
     return JSONResponse(content={'message' : 'User is succesfully deleted'}, status_code=200)
 
 
-@router.get('/', response_model=UserList)
+@router.get('/all', response_model=UserList)
 async def get_all_users(
     user_service: UserService = Depends(get_user_service)
 ):

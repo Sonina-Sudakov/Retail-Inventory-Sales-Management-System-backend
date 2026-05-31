@@ -8,7 +8,7 @@ from app.services.shop import ShopService
 router = APIRouter(prefix='/shops')
 
 
-@router.get("/", response_model=ShopList)
+@router.get("/all", response_model=ShopList)
 async def get_all_shops(
     shop_service: ShopService = Depends(get_shop_service)
 ):
