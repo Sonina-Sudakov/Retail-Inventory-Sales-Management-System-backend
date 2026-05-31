@@ -1,3 +1,5 @@
+from operator import and_
+
 from sqlalchemy.ext.asyncio.session import AsyncSession
 from sqlalchemy.orm import selectinload
 from sqlalchemy.sql.expression import select
@@ -29,8 +31,10 @@ class ShopStockRepository(
                 selectinload(ShopStock.product)
             )
             .where(
-                ShopStock.shop_id == shop_id
-                and ShopStock.product_id == product_id
+                and_(
+                    ShopStock.shop_id == shop_id,
+                    ShopStock.product_id == product_id
+                )
             )
         )
 
