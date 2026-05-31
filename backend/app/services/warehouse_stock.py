@@ -1,4 +1,5 @@
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import selectinload
 
 from app.db.models.warehouse_stock import WarehouseStock
 from app.db.repositories.product import ProductRepository
@@ -41,10 +42,11 @@ class WarehouseStockService:
         if schema.quantity < 0:
             raise InvalidQuantityError(schema.quantity)
 
-        product = await self.product_repository.get_by_id(schema.product_id)
+        if schema.product_id is not None:
+            product = await self.product_repository.get_by_id(schema.product_id)
 
-        if not product:
-            raise ProductNotFoundError(schema.product_id)
+            if not product:
+                raise ProductNotFoundError(schema.product_id)
 
         model = await self.warehouse_stock_repository.get_stock_by_cell_code(schema.cell_code)
 
@@ -68,7 +70,9 @@ class WarehouseStockService:
         self
     ) -> WarehouseStockList:
         
-        models = await self.warehouse_stock_repository.get_all()
+        models = await self.warehouse_stock_repository.get_all(
+            options=[selectinload(WarehouseStock.product)]
+        )
 
         return WarehouseStockList(
             count=len(models),
@@ -245,7 +249,10 @@ class WarehouseStockService:
         id: int
     ) -> WarehouseStock:
 
-        model = await self.warehouse_stock_repository.get_by_id(id)
+        model = await self.warehouse_stock_repository.get_by_id(
+            id,
+            options=[selectinload(WarehouseStock.product)]
+        )
 
         if not model:
             raise WarehouseStockNotFoundError(id)

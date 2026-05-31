@@ -9,15 +9,15 @@ class WarehouseStockBaseModel(BaseModel):
 
 class WarehouseStockCreate(WarehouseStockBaseModel):
     cell_code: str
-    product_id: int
-    quantity: int
+    product_id: int | None = None
+    quantity: int = 0
 
 
 class WarehouseStockView(WarehouseStockBaseModel):
     id: int
     cell_code: str
-    product_id: ProductView
-    quantity: int
+    product: ProductView | None = None
+    quantity: int = 0
 
 
 class WarehouseStockUpdate(WarehouseStockBaseModel):
