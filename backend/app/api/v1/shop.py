@@ -45,7 +45,7 @@ async def delete_shop_by_id(
 
     await shop_service.delete(id)
 
-    return JSONResponse(content={'message' : 'Shop is succesfully deleted'}, status_code=200)
+    return JSONResponse(content=None, status_code=204)
 
 
 @router.post("/", response_model=ShopView)
@@ -103,4 +103,4 @@ async def delete_shop_stock(
 
     await shop_stock_service.delete_stock(shop_id, product_id)
 
-    return JSONResponse(content={'message' : 'Shop stock is succesfully deleted'}, status_code=200)
+    return JSONResponse(content=None, status_code=204)
