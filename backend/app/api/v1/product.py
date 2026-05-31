@@ -1,12 +1,10 @@
-from warnings import resetwarnings
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 
 from app.api.dependencies import get_product_service
-from app.schemas.product import (ProductCreate, ProductList, 
-                                 ProductView, ProductUpdate)
+from app.schemas.product import (ProductCreate, ProductList, ProductUpdate,
+                                 ProductView)
 from app.services.product import ProductService
-
 
 router = APIRouter(prefix='/products')
 
@@ -45,7 +43,7 @@ async def delete_product_by_id(
     
     await product_service.delete(id)
 
-    return JSONResponse(content={'message' : 'Product is succesfully deleted'}, status_code=404)
+    return JSONResponse(content={'message' : 'Product is succesfully deleted'}, status_code=200)
 
 
 @router.put('/', response_model=ProductView)

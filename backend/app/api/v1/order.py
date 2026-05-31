@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends
 
 from app.api.dependencies import get_order_service
-from app.schemas.order import (OrderDetailedView, OrderList, OrderUserView, 
-                               OrderView, OrderCreate)
-from app.services.order import OrderService
 from app.enums import OrderStatus
+from app.schemas.order import (OrderCreate, OrderDetailedView, OrderList,
+                               OrderView)
+from app.services.order import OrderService
 
 router = APIRouter(prefix='/orders')
 

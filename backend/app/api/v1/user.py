@@ -35,7 +35,7 @@ async def delete_user_by_id(
 
     await user_service.delete(id)
 
-    return JSONResponse(content={'message' : 'User is succesfully deleted'}, status_code=404)
+    return JSONResponse(content={'message' : 'User is succesfully deleted'}, status_code=200)
 
 
 @router.get('/', response_model=UserList)
