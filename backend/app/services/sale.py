@@ -6,7 +6,8 @@ from app.db.repositories.product import ProductRepository
 from app.db.repositories.sale import SaleRepository
 from app.db.repositories.shop import ShopRepository
 from app.db.repositories.user import UserRepository
-from app.schemas.sale import SaleCreate, SaleDetailedView, SaleList, SaleView
+from app.schemas.sale import (SaleCreate, SaleDetailedView, SaleItemView,
+                              SaleList, SaleView)
 from app.schemas.shop_stock import UpdateShopStockQuantity
 from app.services.exceptions import (EmptySaleError, ProductNotFoundError,
                                      SaleNotFoundError, ShopNotFoundError,
@@ -76,6 +77,15 @@ class SaleService:
 
         sale = await self.sale_repository.save(sale)
 
+        sale = await self.sale_repository.get_by_id(
+            sale.id,
+            options=[
+                selectinload(Sale.shop),
+                selectinload(Sale.user),
+                selectinload(Sale.items)
+            ]
+        )
+
         return SaleView.model_validate(sale)
 
 
@@ -83,13 +93,27 @@ class SaleService:
 
         sale = await self.sale_repository.get_by_id(
             id,
-            options=[selectinload(Sale.items)]
+            options=[
+                selectinload(Sale.shop),
+                selectinload(Sale.user),
+                selectinload(Sale.items).selectinload(SaleItem.product)
+            ]
         )
         
         if sale is None:
             raise SaleNotFoundError(id)
 
-        return SaleDetailedView.model_validate(sale)
+        return SaleDetailedView(
+            id=sale.id,
+            shop=sale.shop,
+            user=sale.user,
+            count=len(sale.items),
+            items=[
+                SaleItemView.model_validate(item)
+                for item in sale.items
+            ],
+            created_at=sale.created_at
+        )
 
 
     async def get_by_shop(self, shop_id: int) -> SaleList:
@@ -103,7 +127,12 @@ class SaleService:
 
     async def get_all(self) -> SaleList:
 
-        sales = await self.sale_repository.get_all()
+        sales = await self.sale_repository.get_all(
+            options=[
+                selectinload(Sale.shop),
+                selectinload(Sale.user)
+            ]
+        )
 
         return SaleList(
             count=len(sales),
