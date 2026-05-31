@@ -122,3 +122,20 @@ class WarehouseStockAlreadyExistsError(Exception):
 class WarehouseStockNotFoundError(Exception):
     def __init__(self, id):
         self.id = id
+
+
+class InsufficientWarehouseStockError(Exception):
+    def __init__(self, id, quantity, change):
+        self.id = id 
+        self.quantity = quantity
+        self.change = change 
+
+
+class InvalidChangeValueError(Exception):
+    def __init__(self, change):
+        self.change = change
+
+
+class DuplicateCellCodeError(Exception):
+    def __init__(self, cell_code):
+        self.cell_code = cell_code

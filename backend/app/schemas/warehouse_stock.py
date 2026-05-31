@@ -30,3 +30,30 @@ class WarehouseStockUpdate(WarehouseStockBaseModel):
 class WarehouseStockList(WarehouseStockBaseModel):
     count: int
     items: list[WarehouseStockView]
+
+
+class ProductInWarehouseList(WarehouseStockBaseModel):
+    product: ProductView
+    count: int
+    total_quantity: int
+    items: list[WarehouseStockViewWithoutProduct]
+
+
+class WarehouseStockViewWithoutProduct(WarehouseStockBaseModel):
+    cell_code: str
+    quantity: int
+
+
+class ChangeWarehouseStockCellCode(WarehouseStockBaseModel):
+    id: int
+    cell_code: str
+
+class WarehouseSwapProductsView(WarehouseStockBaseModel):
+    first_stock: WarehouseStockView
+    second_stock: WarehouseStockView
+
+
+class StoreProductInStock(WarehouseStockBaseModel):
+    stock_id: int
+    product_id: int
+    quantity: int = 0
