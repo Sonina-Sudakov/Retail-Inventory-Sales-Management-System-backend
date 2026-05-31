@@ -18,7 +18,7 @@ async def create_product(
     return await product_service.create_product(product)
 
 
-@router.get('/{id}', response_model=ProductView)
+@router.get('/', response_model=ProductView)
 async def get_product_by_id(
     id: int,
     product_service: ProductService = Depends(get_product_service)
@@ -35,7 +35,7 @@ async def get_all_products(
     return await product_service.get_all()
 
 
-@router.delete('/{id}')
+@router.delete('/')
 async def delete_product_by_id(
     id: int,
     product_service: ProductService = Depends(get_product_service)

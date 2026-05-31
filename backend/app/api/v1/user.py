@@ -18,7 +18,7 @@ async def create_user(
     return await user_service.create(user)
 
 
-@router.get('/{id}', response_model=UserView)
+@router.get('/', response_model=UserView)
 async def get_user_by_id(
     id: int,
     user_service: UserService = Depends(get_user_service)
@@ -27,7 +27,7 @@ async def get_user_by_id(
     return await user_service.get_by_id(id)
 
 
-@router.delete('/{id}')
+@router.delete('/')
 async def delete_user_by_id(
     id: int,
     user_service: UserService = Depends(get_user_service)
