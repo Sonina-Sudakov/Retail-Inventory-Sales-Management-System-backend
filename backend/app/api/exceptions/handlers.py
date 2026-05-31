@@ -1,14 +1,14 @@
 from fastapi import Request
 from fastapi.responses import JSONResponse
 
-from app.services.exceptions import (EmptyOrderError,
+from app.services.exceptions import (EmptyOrderError, EmptySaleError,
                                      InsufficientShopStockError,
                                      InvalidMinQuantityError,
                                      InvalidQuantityError,
                                      OrderIsNotPendingError,
                                      OrderNotFoundError,
                                      ProductAlreadyExistsError,
-                                     ProductNotFoundError,
+                                     ProductNotFoundError, SaleNotFoundError,
                                      ShopAlreadyExistsError, ShopNotFoundError,
                                      ShopStockNotFoundError,
                                      UserAlreadyExistsError, UserNotFoundError,
@@ -205,5 +205,35 @@ async def empty_order_handler(
         content={
             "message":
                 f"Order must contain at least one item"
+        }
+    )
+
+
+# ---[[ SALE ]]---
+
+
+
+async def sale_not_found_handler(
+    request: Request,
+    exc: SaleNotFoundError 
+):
+    return JSONResponse(
+        status_code=404,
+        content={
+            "message":
+                f"Sale with id = {exc.sale_id} doesn't exist"
+        }
+    )
+
+
+async def empty_sale_handler(
+    request: Request,
+    exc: EmptySaleError
+):
+    return JSONResponse(
+        status_code=400,
+        content={
+            "message":
+                f"Sale must contain at least one item"
         }
     )

@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 
 from app.api.exceptions.handlers import (empty_order_handler,
+                                         empty_sale_handler,
                                          insufficient_shop_stock_error_handler,
                                          invalid_min_quantity_error_handler,
                                          invalid_quantity_error_handler,
@@ -9,19 +10,20 @@ from app.api.exceptions.handlers import (empty_order_handler,
                                          passwords_mismatch_handler,
                                          product_already_exists_handler,
                                          product_not_found_handler,
+                                         sale_not_found_handler,
                                          shop_already_exists_handler,
                                          shop_not_found_handler,
                                          shop_stock_not_found_handler,
                                          user_already_exists_handler,
                                          user_not_found_handler)
-from app.services.exceptions import (EmptyOrderError,
+from app.services.exceptions import (EmptyOrderError, EmptySaleError,
                                      InsufficientShopStockError,
                                      InvalidMinQuantityError,
                                      InvalidQuantityError,
                                      OrderIsNotPendingError,
                                      OrderNotFoundError,
                                      ProductAlreadyExistsError,
-                                     ProductNotFoundError,
+                                     ProductNotFoundError, SaleNotFoundError,
                                      ShopAlreadyExistsError, ShopNotFoundError,
                                      ShopStockNotFoundError,
                                      UserAlreadyExistsError, UserNotFoundError,
@@ -98,4 +100,14 @@ def register_exception_handlers(app: FastAPI):
     app.add_exception_handler(
         InvalidMinQuantityError,
         invalid_min_quantity_error_handler
+    )
+
+    app.add_exception_handler(
+        SaleNotFoundError,
+        sale_not_found_handler 
+    )
+
+    app.add_exception_handler(
+        EmptySaleError,
+        empty_sale_handler
     )
