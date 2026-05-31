@@ -105,8 +105,8 @@ class InsufficientShopStockError(Exception):
 
 
 class InvalidQuantityError(Exception):
-    def __init__(self, min_quantity):
-        self.min_quantity = min_quantity
+    def __init__(self, quantity):
+        self.quantity = quantity
 
 
 class InvalidMinQuantityError(Exception):
