@@ -107,6 +107,9 @@ async def shop_already_exists_handler(
     )
 
 
+# ---[[ ORDER ]] ---
+
+
 async def order_not_found_handler(
     request: Request,
     exc: OrderNotFoundError
