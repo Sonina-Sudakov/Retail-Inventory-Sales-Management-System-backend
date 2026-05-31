@@ -8,7 +8,7 @@ from app.schemas.shop_stock import (ProductInShopsView, ShopStockCreate,
                                     ShopStockList, ShopStockView,
                                     ShopStockWithProductView,
                                     ShopStockWithShopView)
-from app.services.exceptions import (InsufficientStockError,
+from app.services.exceptions import (InsufficientShopStockError,
                                      InvalidMinQuantityError,
                                      InvalidQuantityError,
                                      ProductNotFoundError, ShopNotFoundError,
@@ -86,7 +86,7 @@ class ShopStockService:
         model = await self.load_stock_(shop_id, product_id)
 
         if model.quantity - change < 0:
-            raise InsufficientStockError(shop_id, product_id, model.quantity, change)
+            raise InsufficientShopStockError(shop_id, product_id, model.quantity, change)
 
         model.quantity -= change
 

@@ -96,7 +96,7 @@ class ShopStockNotFoundError(Exception):
         self.product_id = product_id
 
 
-class InsufficientStockError(Exception):
+class InsufficientShopStockError(Exception):
     def __init__(self, shop_id, product_id, quantity, change):
         self.shop_id = shop_id
         self.product_id = product_id
