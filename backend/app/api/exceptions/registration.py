@@ -26,8 +26,7 @@ from app.services.exceptions import (EmptyOrderError, EmptySaleError,
                                      ProductNotFoundError, SaleNotFoundError,
                                      ShopAlreadyExistsError, ShopNotFoundError,
                                      ShopStockNotFoundError,
-                                     UserAlreadyExistsError, UserNotFoundError,
-                                     UserPasswordsMismatchError)
+                                     UserAlreadyExistsError, UserNotFoundError)
 
 
 def register_exception_handlers(app: FastAPI):
@@ -40,11 +39,6 @@ def register_exception_handlers(app: FastAPI):
     app.add_exception_handler(
         UserAlreadyExistsError,
         user_already_exists_handler
-    )
-
-    app.add_exception_handler(
-        UserPasswordsMismatchError,
-        passwords_mismatch_handler
     )
 
     app.add_exception_handler(

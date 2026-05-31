@@ -2,8 +2,7 @@ from app.db.models.user import User
 from app.db.repositories.user import UserRepository
 from app.schemas.user import (UserCreate, UserList, UserUpdateFullname,
                               UserUpdatePassword, UserView)
-from app.services.exceptions import (UserAlreadyExistsError, UserNotFoundError,
-                                     UserPasswordsMismatchError)
+from app.services.exceptions import UserAlreadyExistsError, UserNotFoundError
 
 
 class UserService:
@@ -80,9 +79,6 @@ class UserService:
         
         if user is None:
             raise UserNotFoundError(schema.id)
-
-        if user.hash_password != schema.old_password:
-            raise UserPasswordsMismatchError(user.username)
 
         user.hash_password = schema.new_password # TODO add bcrypt
         

@@ -11,8 +11,7 @@ from app.services.exceptions import (EmptyOrderError, EmptySaleError,
                                      ProductNotFoundError, SaleNotFoundError,
                                      ShopAlreadyExistsError, ShopNotFoundError,
                                      ShopStockNotFoundError,
-                                     UserAlreadyExistsError, UserNotFoundError,
-                                     UserPasswordsMismatchError)
+                                     UserAlreadyExistsError, UserNotFoundError)
 
 # ---[[ USER ]]---
 
@@ -40,20 +39,6 @@ async def user_already_exists_handler(
         content={
             "message":
                 f"User with username = {exc.username} already exists"
-        }
-    )
-
-
-async def passwords_mismatch_handler(
-    request: Request,
-    exc: UserPasswordsMismatchError
-):
-
-    return JSONResponse(
-        status_code=422,
-        content={
-            "message":
-                f"Wrong old password for user {exc.username}"
         }
     )
 
