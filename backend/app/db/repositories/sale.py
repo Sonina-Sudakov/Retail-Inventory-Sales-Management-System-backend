@@ -3,8 +3,6 @@ from sqlalchemy.orm.strategy_options import selectinload
 from sqlalchemy.sql.expression import select
 
 from app.db.models.sale import Sale
-from app.db.models.sale_item import SaleItem
-from app.db.models.user import User
 from app.db.repositories.base import BaseRepository
 
 
@@ -18,22 +16,6 @@ class SaleRepository(
         super().__init__(Sale, session)
 
 
-    async def get_full_sale_by_id(
-        self,
-        id: int
-    ) -> Sale | None:
-        sale = await self.get_by_id(
-            id,
-            options=[
-                selectinload(Sale.shop),
-                selectinload(Sale.user),
-                selectinload(Sale.sale_items)
-            ]
-        )
-
-        return sale
-
-
     async def get_shop_sales(
         self,
         shop_id: int
@@ -41,11 +23,13 @@ class SaleRepository(
         
         stmt = (
             select(
-                Sale,
-                User.fullname
+                Sale
             )
-            .join(User)
             .where(Sale.shop_id == shop_id)
+            .options(
+                selectinload(Sale.shop),
+                selectinload(Sale.user)
+            )
         )
 
         result = await self.session.execute(stmt)
