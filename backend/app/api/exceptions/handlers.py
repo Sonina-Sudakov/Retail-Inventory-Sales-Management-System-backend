@@ -1,11 +1,16 @@
 from fastapi import Request
 from fastapi.responses import JSONResponse
 
-from app.services.exceptions import (EmptyOrderError, OrderIsNotPendingError,
+from app.services.exceptions import (EmptyOrderError,
+                                     InsufficientShopStockError,
+                                     InvalidMinQuantityError,
+                                     InvalidQuantityError,
+                                     OrderIsNotPendingError,
                                      OrderNotFoundError,
                                      ProductAlreadyExistsError,
                                      ProductNotFoundError,
                                      ShopAlreadyExistsError, ShopNotFoundError,
+                                     ShopStockNotFoundError,
                                      UserAlreadyExistsError, UserNotFoundError,
                                      UserPasswordsMismatchError)
 
@@ -107,6 +112,61 @@ async def shop_already_exists_handler(
     )
 
 
+# ---[[ SHOP STOCKS ]]---
+
+
+async def shop_stock_not_found_handler(
+    request: Request,
+    exc: ShopStockNotFoundError
+):
+    return JSONResponse(
+        status_code=404,
+        content={
+            "message":
+                f"Shop stock with shop_id = {exc.shop_id} and product_id = {exc.product_id} doesn't exist"
+        }
+    )
+
+
+async def insufficient_shop_stock_error_handler(
+    request: Request,
+    exc: InsufficientShopStockError
+):
+    return JSONResponse(
+        status_code=409,
+        content={
+            "message":
+                f"Not enough quantity in shop stock with shop_id = {exc.shop_id} and product_id = {exc.product_id} to decrease it for {exc.change}"
+        }
+    )
+
+
+async def invalid_quantity_error_handler(
+    request: Request,
+    exc: InvalidQuantityError
+):
+    return JSONResponse(
+        status_code=409,
+        content={
+            "message":
+                f"Quantity value must be greater or equal than zero (received {exc.quantity})"
+        }
+    )
+
+
+async def invalid_min_quantity_error_handler(
+    request: Request,
+    exc: InvalidMinQuantityError
+):
+    return JSONResponse(
+        status_code=409,
+        content={
+            "message":
+                f"Minimal quantity value must be greater or equal than zero (received {exc.min_quantity})"
+        }
+    )
+
+
 # ---[[ ORDER ]] ---
 
 
@@ -147,4 +207,3 @@ async def empty_order_handler(
                 f"Order must contain at least one item"
         }
     )
-
