@@ -8,6 +8,7 @@ from app.schemas.shop_stock import (ProductInShopsView, ShopStockCreate,
                                     ShopStockList, ShopStockView,
                                     ShopStockWithProductView,
                                     ShopStockWithShopView,
+                                    UpdateShopStockMinQuantity,
                                     UpdateShopStockQuantity)
 from app.services.exceptions import (InsufficientShopStockError,
                                      InvalidMinQuantityError,
@@ -94,19 +95,17 @@ class ShopStockService:
 
     async def update_stock_min_quantity(
         self,
-        shop_id: int,
-        product_id: int,
-        min_quantity: int
+        schema: UpdateShopStockMinQuantity
     ) -> ShopStockView:
 
-        await self.check_shop_and_product_existance_(shop_id, product_id)
+        await self.check_shop_and_product_existance_(schema.shop_id, schema.product_id)
 
-        model = await self.load_stock_(shop_id, product_id)
+        model = await self.load_stock_(schema.shop_id, schema.product_id)
 
-        if min_quantity < 0:
-            raise InvalidMinQuantityError(min_quantity)
+        if schema.min_quantity < 0:
+            raise InvalidMinQuantityError(schema.min_quantity)
         
-        model.min_quantity = min_quantity
+        model.min_quantity = schema.min_quantity
 
         model = await self.shop_stock_repository.save(model)
 
