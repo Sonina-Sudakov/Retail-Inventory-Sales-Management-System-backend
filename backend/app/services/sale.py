@@ -7,9 +7,11 @@ from app.db.repositories.sale import SaleRepository
 from app.db.repositories.shop import ShopRepository
 from app.db.repositories.user import UserRepository
 from app.schemas.sale import SaleCreate, SaleDetailedView, SaleList, SaleView
+from app.schemas.shop_stock import UpdateShopStockQuantity
 from app.services.exceptions import (EmptySaleError, ProductNotFoundError,
                                      SaleNotFoundError, ShopNotFoundError,
                                      UserNotFoundError)
+from app.services.shop_stock import ShopStockService
 
 
 class SaleService:
@@ -18,13 +20,15 @@ class SaleService:
             sale_repository: SaleRepository,
             shop_repository: ShopRepository,
             user_repository: UserRepository,
-            product_repository: ProductRepository
+            product_repository: ProductRepository,
+            shop_stock_service: ShopStockService
         ):
 
         self.sale_repository = sale_repository
         self.shop_repository = shop_repository
         self.user_repository = user_repository
         self.product_repository = product_repository
+        self.shop_stock_service = shop_stock_service
 
 
     async def create_sale(self, schema: SaleCreate) -> SaleView:
@@ -48,6 +52,14 @@ class SaleService:
 
             if product is None:
                 raise ProductNotFoundError(item.product_id)
+
+            await self.shop_stock_service.decrease_stock_quantity(
+                UpdateShopStockQuantity(
+                    shop_id=schema.shop_id,
+                    product_id=item.product_id,
+                    change=item.quantity
+                )
+            )
 
         sale = Sale(
             shop_id=schema.shop_id,
