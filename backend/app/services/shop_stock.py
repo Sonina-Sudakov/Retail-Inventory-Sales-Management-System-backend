@@ -58,6 +58,26 @@ class ShopStockService:
         )
 
 
+    async def add_stock(
+        self,
+        schema: UpdateShopStockQuantity
+    ) -> ShopStockView:
+
+        model = await self.load_stock_(schema.shop_id, schema.product_id)
+
+        if model:
+            return await self.increase_stock_quantity(schema)
+        else:
+            return await self.create_stock(
+                ShopStockCreate(
+                    shop_id=schema.shop_id,
+                    product_id=schema.product_id,
+                    min_quantity=0,
+                    quantity=schema.change
+                )
+            )
+
+
     async def increase_stock_quantity(
         self,
         schema: UpdateShopStockQuantity
