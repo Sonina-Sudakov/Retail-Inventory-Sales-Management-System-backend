@@ -77,7 +77,7 @@ class ShipmentAlreadyAcceptedError(Exception):
         self.shipment_id = shipment_id
 
 
-class ShipmentAlreadyCancelledError(Exception):
+class ShipmentAlreadyCanceledError(Exception):
     def __init__(self, shipment_id: int):
         super().__init__(
             "Shipment is already canceled and cannot be accepted"
