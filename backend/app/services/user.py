@@ -1,5 +1,6 @@
 from sqlalchemy.orm import selectinload
 
+import app.core.secutiry as security
 from app.db.models.user import User
 from app.db.repositories.user import UserRepository
 from app.schemas.user import (UserCreate, UserList, UserUpdateFullname,
@@ -21,14 +22,18 @@ class UserService:
         if user is not None:
             raise UserAlreadyExistsError(schema.username)
 
+        hash_password = security.hash_password(schema.password)
+
         user = User(
             username=schema.username,
             fullname=schema.fullname,
-            hash_password=schema.password, # TODO add bcrypt
+            hash_password=hash_password,
             role=schema.role
         )
 
         user = await self.user_repository.save(user)
+
+        user = await self.load_user_(user.id)
 
         return UserView.model_validate(user)
 
@@ -74,7 +79,7 @@ class UserService:
 
         user = await self.load_user_(schema.id)
         
-        user.hash_password = schema.new_password # TODO add bcrypt
+        user.hash_password = security.hash_password(schema.new_password)
         
         user = await self.user_repository.save(user)
 
