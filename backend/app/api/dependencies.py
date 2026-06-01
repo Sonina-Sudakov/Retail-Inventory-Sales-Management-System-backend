@@ -7,6 +7,7 @@ from app.db.repositories import (OrderRepository, ProductRepository,
                                  ShopStockRepository, UserRepository)
 from app.db.repositories.shipment import ShipmentRepository
 from app.db.repositories.warehouse_stock import WarehouseStockRepository
+from app.services.auth import AuthService
 from app.services.order import OrderService
 from app.services.product import ProductService
 from app.services.sale import SaleService
@@ -154,3 +155,10 @@ async def get_shipment_stock_service(
         shop_stock_repository,
         shop_stock_service
     )
+
+
+async def get_auth_service(
+    user_repository: UserRepository = Depends(get_user_repository)
+) -> AuthService:
+
+    return AuthService(user_repository)

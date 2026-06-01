@@ -134,3 +134,18 @@ class InvalidChangeValueError(Exception):
 class DuplicateCellCodeError(Exception):
     def __init__(self, cell_code):
         self.cell_code = cell_code
+
+
+class InvalidCredentialsError(Exception):
+    def __init__(self):
+        pass
+
+
+class UnauthorizedError(Exception):
+    def __init__(self):
+        pass
+
+
+class ForbiddenError(Exception):
+    def __init__(self):
+        pass

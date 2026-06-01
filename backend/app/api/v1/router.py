@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 
+from app.api.v1.auth import router as auth_router
 from app.api.v1.order import router as order_router
 from app.api.v1.product import router as product_router
 from app.api.v1.sale import router as sale_router
@@ -17,3 +18,4 @@ router.include_router(shipment_router)
 router.include_router(shop_router)
 router.include_router(user_router)
 router.include_router(warehouse_router)
+router.include_router(auth_router)

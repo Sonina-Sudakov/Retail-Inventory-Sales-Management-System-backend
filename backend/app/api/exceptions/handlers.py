@@ -1,4 +1,4 @@
-from fastapi import Request
+from fastapi import Request, Response
 from fastapi.responses import JSONResponse
 
 from app.services.exceptions import (DuplicateCellCodeError, EmptyOrderError,
@@ -6,6 +6,7 @@ from app.services.exceptions import (DuplicateCellCodeError, EmptyOrderError,
                                      InsufficientShopStockError,
                                      InsufficientWarehouseStockError,
                                      InvalidChangeValueError,
+                                     InvalidCredentialsError,
                                      InvalidMinQuantityError,
                                      InvalidQuantityError,
                                      OrderIsNotPendingError,
@@ -16,7 +17,7 @@ from app.services.exceptions import (DuplicateCellCodeError, EmptyOrderError,
                                      ShipmentAlreadyCanceledError,
                                      ShipmentNotFoundError,
                                      ShopAlreadyExistsError, ShopNotFoundError,
-                                     ShopStockNotFoundError,
+                                     ShopStockNotFoundError, UnauthorizedError,
                                      UserAlreadyExistsError, UserNotFoundError,
                                      WarehouseStockAlreadyExistsError,
                                      WarehouseStockNotFoundError)
@@ -353,3 +354,30 @@ async def empty_shipment_handler(
                 f"Shipment must contain at least one item"
         }
     )
+
+
+# ---[[ SECURITY ]]--- #
+
+
+async def invalid_credentials_handler(
+    request: Request,
+    exc: InvalidCredentialsError
+):
+
+    return Response(status_code=401)
+
+
+async def unauthorized_handler(
+    request: Request,
+    exc: UnauthorizedError
+):
+
+    return Response(status_code=401)
+
+
+async def forbidden_handler(
+    request: Request,
+    exc: ForbiddenError
+):
+
+    return Response(status_code=403)

@@ -30,3 +30,18 @@ class UserRepository(
         result = await self.session.execute(stmt)
 
         return result.scalar_one_or_none()
+
+
+    async def get_user_password_hash(
+        self,
+        id: int
+    ) -> str:
+
+        stmt = (
+            select(User.hash_password)
+            .where(User.id == id)
+        )
+
+        result = await self.session.execute(stmt)
+
+        return result.scalar_one()

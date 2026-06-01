@@ -1,3 +1,4 @@
+from app.services.auth import AuthService
 from app.services.order import OrderService
 from app.services.product import ProductService
 from app.services.sale import SaleService
