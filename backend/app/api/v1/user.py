@@ -3,7 +3,8 @@ from fastapi.responses import JSONResponse
 
 from app.api.dependencies import get_user_service
 from app.schemas.user import (UserCreate, UserList, UserUpdateFullname,
-                              UserUpdatePassword, UserView)
+                              UserUpdatePassword, UserUpdateWorkplace,
+                              UserView)
 from app.services.user import UserService
 
 router = APIRouter(prefix='/users')
@@ -62,3 +63,12 @@ async def change_fullname(
 ):
 
     return await user_service.change_fullname(schema)
+
+
+@router.put('/change_workplace', response_model=UserView)
+async def change_workplace(
+    schema: UserUpdateWorkplace,
+    user_service: UserService = Depends(get_user_service)
+):
+
+    return await user_service.update_workplace(schema)

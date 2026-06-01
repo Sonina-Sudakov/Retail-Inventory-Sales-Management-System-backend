@@ -1,4 +1,5 @@
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 from sqlalchemy.sql import select
 
 from app.db.models.user import User
@@ -20,7 +21,11 @@ class UserRepository(
         username: str
     ) -> User | None:
 
-        stmt = select(User).where(User.username == username)
+        stmt = (
+            select(User)
+            .where(User.username == username)
+            .options(selectinload(User.works_in_shop))
+        )
 
         result = await self.session.execute(stmt)
 
