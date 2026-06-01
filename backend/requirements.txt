@@ -10,3 +10,4 @@ asyncpg>=0.29.0
 alembic>=1.13.0
 greenlet
 psycopg2[binary]
+PyJWT
