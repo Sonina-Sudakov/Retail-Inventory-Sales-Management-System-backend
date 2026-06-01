@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Response
 from fastapi.responses import JSONResponse
 
 from app.api.dependencies import get_product_service
@@ -43,7 +43,7 @@ async def delete_product_by_id(
     
     await product_service.delete(id)
 
-    return JSONResponse(content=None, status_code=204)
+    return Response(status_code=204)
 
 
 @router.put('/', response_model=ProductView)

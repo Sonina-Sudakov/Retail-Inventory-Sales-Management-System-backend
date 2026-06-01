@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Response
 from fastapi.responses import JSONResponse
 
 from app.api.dependencies import get_shop_service, get_shop_stock_service
@@ -45,7 +45,7 @@ async def delete_shop_by_id(
 
     await shop_service.delete(id)
 
-    return JSONResponse(content=None, status_code=204)
+    return Response(status_code=204)
 
 
 @router.post("/", response_model=ShopView)
@@ -103,4 +103,4 @@ async def delete_shop_stock(
 
     await shop_stock_service.delete_stock(shop_id, product_id)
 
-    return JSONResponse(content=None, status_code=204)
+    return Response(status_code=204)

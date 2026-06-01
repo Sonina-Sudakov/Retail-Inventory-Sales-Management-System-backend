@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Response
 from fastapi.responses import JSONResponse
 
 from app.api.dependencies import get_warehouse_stock_service
@@ -94,4 +94,4 @@ async def delete_stock(
 
     await warehouse_service.delete_stock(id)
 
-    return JSONResponse(content=None, status_code=204)
+    return Response(status_code=204)

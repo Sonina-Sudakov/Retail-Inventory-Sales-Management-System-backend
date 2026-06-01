@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Response
 from fastapi.responses import JSONResponse
 
 from app.api.dependencies import get_user_service
@@ -36,7 +36,7 @@ async def delete_user_by_id(
 
     await user_service.delete(id)
 
-    return JSONResponse(content=None, status_code=204)
+    return Response(status_code=204)
 
 
 @router.get('/all', response_model=UserList)
