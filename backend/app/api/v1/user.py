@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends, Response
-from fastapi.responses import JSONResponse
 
 from app.api.dependencies import get_user_service
+from app.core.auth.dependencies import get_current_user, require_role
+from app.enums import UserRole
 from app.schemas.user import (UserCreate, UserList, UserUpdateFullname,
                               UserUpdatePassword, UserUpdateWorkplace,
                               UserView)
@@ -12,17 +13,23 @@ router = APIRouter(prefix='/users')
 
 @router.post('/', response_model=UserView)
 async def create_user(
-    user: UserCreate,
-    user_service: UserService = Depends(get_user_service)
+    schema: UserCreate,
+    user_service: UserService = Depends(get_user_service),
+    user=Depends(
+        require_role(UserRole.ADMIN)
+    )
 ):
 
-    return await user_service.create(user)
+    return await user_service.create(schema)
 
 
 @router.get('/', response_model=UserView)
 async def get_user_by_id(
     id: int,
-    user_service: UserService = Depends(get_user_service)
+    user_service: UserService = Depends(get_user_service),
+    user=Depends(
+        get_current_user
+    )
 ):
 
     return await user_service.get_by_id(id)
@@ -31,7 +38,10 @@ async def get_user_by_id(
 @router.delete('/')
 async def delete_user_by_id(
     id: int,
-    user_service: UserService = Depends(get_user_service)
+    user_service: UserService = Depends(get_user_service),
+    user=Depends(
+        require_role(UserRole.ADMIN)
+    )
 ):
 
     await user_service.delete(id)
@@ -41,7 +51,10 @@ async def delete_user_by_id(
 
 @router.get('/all', response_model=UserList)
 async def get_all_users(
-    user_service: UserService = Depends(get_user_service)
+    user_service: UserService = Depends(get_user_service),
+    user=Depends(
+        require_role(UserRole.ADMIN)
+    )
 ):
 
     return await user_service.get_all()
@@ -50,7 +63,10 @@ async def get_all_users(
 @router.put('/change_password', response_model=UserView)
 async def change_password(
     schema: UserUpdatePassword,
-    user_service: UserService = Depends(get_user_service)
+    user_service: UserService = Depends(get_user_service),
+    user=Depends(
+        require_role(UserRole.ADMIN)
+    )
 ):
 
     return await user_service.change_password(schema)
@@ -59,7 +75,10 @@ async def change_password(
 @router.put('/change_fullname', response_model=UserView)
 async def change_fullname(
     schema: UserUpdateFullname,
-    user_service: UserService = Depends(get_user_service)
+    user_service: UserService = Depends(get_user_service),
+    user=Depends(
+        require_role(UserRole.ADMIN)
+    )
 ):
 
     return await user_service.change_fullname(schema)
@@ -68,7 +87,10 @@ async def change_fullname(
 @router.put('/change_workplace', response_model=UserView)
 async def change_workplace(
     schema: UserUpdateWorkplace,
-    user_service: UserService = Depends(get_user_service)
+    user_service: UserService = Depends(get_user_service),
+    user=Depends(
+        require_role(UserRole.ADMIN)
+    )
 ):
 
     return await user_service.update_workplace(schema)
