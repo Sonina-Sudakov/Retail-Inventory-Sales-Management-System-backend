@@ -62,17 +62,20 @@ class ShopService:
 
     async def update(self, schema: ShopUpdate) -> ShopView:
 
-        shop = await self.shop_repository.get_by_id(schema.id)
+        try:
+            shop = await self.shop_repository.get_by_id(schema.id)
 
-        if shop is None:
-            raise ShopNotFoundError(schema.id)
+            if shop is None:
+                raise ShopNotFoundError(schema.id)
 
-        shop.name = schema.name
-        shop.address = schema.address
-        shop.contact_face = schema.contact_face
-        shop.phone_number = schema.phone_number
-        shop.email = schema.email
+            shop.name = schema.name
+            shop.address = schema.address
+            shop.contact_face = schema.contact_face
+            shop.phone_number = schema.phone_number
+            shop.email = schema.email
 
-        shop = await self.shop_repository.save(shop)
+            shop = await self.shop_repository.save(shop)
+        except IntegrityError:
+            raise ShopAlreadyExistsError(schema.phone_number, schema.email)
 
         return ShopView.model_validate(shop) 
