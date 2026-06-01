@@ -1,6 +1,6 @@
 from sqlalchemy.orm import selectinload
 
-import app.core.secutiry as security
+import app.core.auth.security as security
 from app.db.models.user import User
 from app.db.repositories.user import UserRepository
 from app.schemas.user import (UserCreate, UserList, UserUpdateFullname,
