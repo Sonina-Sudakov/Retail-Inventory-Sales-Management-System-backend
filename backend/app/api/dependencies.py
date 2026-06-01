@@ -5,10 +5,12 @@ from app.db.dependencies import get_session
 from app.db.repositories import (OrderRepository, ProductRepository,
                                  SaleRepository, ShopRepository,
                                  ShopStockRepository, UserRepository)
+from app.db.repositories.shipment import ShipmentRepository
 from app.db.repositories.warehouse_stock import WarehouseStockRepository
 from app.services.order import OrderService
 from app.services.product import ProductService
 from app.services.sale import SaleService
+from app.services.shipment import ShipmentService
 from app.services.shop import ShopService
 from app.services.shop_stock import ShopStockService
 from app.services.user import UserService
@@ -124,3 +126,31 @@ async def get_warehouse_stock_service(
 ) -> WarehouseStockService:
 
     return WarehouseStockService(warehouse_stock_repository, product_repository)
+
+
+async def get_shipment_repository(
+    session: AsyncSession = Depends(get_session)
+) -> ShipmentRepository:
+
+    return ShipmentRepository(session)
+
+
+async def get_shipment_stock_service(
+    shipment_repository: ShipmentRepository = Depends(get_shipment_repository),
+    shop_repository: ShopRepository = Depends(get_shop_repository),
+    user_repository: UserRepository = Depends(get_user_repository),
+    product_repository: ProductRepository = Depends(get_product_repository),
+    warehouse_stock_service: WarehouseStockService = Depends(get_warehouse_stock_service),
+    shop_stock_repository: ShopStockRepository = Depends(get_shop_stock_repository),
+    shop_stock_service: ShopStockService = Depends(get_shop_stock_service)
+) -> ShipmentService:
+
+    return ShipmentService(
+        shipment_repository,
+        shop_repository,
+        user_repository,
+        product_repository,
+        warehouse_stock_service,
+        shop_stock_repository,
+        shop_stock_service
+    )

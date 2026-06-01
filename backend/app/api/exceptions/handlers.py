@@ -2,7 +2,7 @@ from fastapi import Request
 from fastapi.responses import JSONResponse
 
 from app.services.exceptions import (DuplicateCellCodeError, EmptyOrderError,
-                                     EmptySaleError,
+                                     EmptySaleError, EmptyShipmentError,
                                      InsufficientShopStockError,
                                      InsufficientWarehouseStockError,
                                      InvalidChangeValueError,
@@ -12,6 +12,9 @@ from app.services.exceptions import (DuplicateCellCodeError, EmptyOrderError,
                                      OrderNotFoundError,
                                      ProductAlreadyExistsError,
                                      ProductNotFoundError, SaleNotFoundError,
+                                     ShipmentAlreadyAcceptedError,
+                                     ShipmentAlreadyCanceledError,
+                                     ShipmentNotFoundError,
                                      ShopAlreadyExistsError, ShopNotFoundError,
                                      ShopStockNotFoundError,
                                      UserAlreadyExistsError, UserNotFoundError,
@@ -293,5 +296,60 @@ async def duplicate_cell_code_handler(
         content={
             "message":
                 f"Cell with cell code = {exc.cell_code} already exists"
+        }
+    )
+
+
+# ---[[ SHIPMENT ]]--- #
+
+
+async def shipment_not_found_handler(
+    request: Request,
+    exc: ShipmentNotFoundError
+):
+    return JSONResponse(
+        status_code=404,
+        content={
+            "message":
+                f"Shipment with id = {exc.shipment_id} not found"
+        }
+    )
+
+
+async def shipment_already_accepted_handler(
+    request: Request,
+    exc: ShipmentAlreadyAcceptedError
+):
+    return JSONResponse(
+        status_code=422,
+        content={
+            "message":
+                f"Shipment with id = {exc.shipment_id} is already accepted"
+        }
+    )
+
+
+async def shipment_already_canceled_handler(
+    request: Request,
+    exc: ShipmentAlreadyCanceledError
+):
+    return JSONResponse(
+        status_code=422,
+        content={
+            "message":
+                f"Shipment with id = {exc.shipment_id} is already canceled"
+        }
+    )
+
+
+async def empty_shipment_handler(
+    request: Request,
+    exc: EmptyShipmentError
+):
+    return JSONResponse(
+        status_code=422,
+        content={
+            "message":
+                f"Shipment must contain at least one item"
         }
     )

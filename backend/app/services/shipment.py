@@ -5,14 +5,15 @@ from app.db.models.shipment_item import ShipmentItem
 from app.db.repositories.product import ProductRepository
 from app.db.repositories.shipment import ShipmentRepository
 from app.db.repositories.shop import ShopRepository
+from app.db.repositories.shop_stock import ShopStockRepository
 from app.db.repositories.user import UserRepository
 from app.enums import ShipmentStatus
 from app.schemas.shipment import (ShipmentCreate, ShipmentDetailedView,
-                                  ShipmentList, ShipmentView)
+                                  ShipmentItemView, ShipmentList, ShipmentView)
 from app.schemas.shop_stock import UpdateShopStockQuantity
 from app.services.exceptions import (EmptyShipmentError, ProductNotFoundError,
                                      ShipmentAlreadyAcceptedError,
-                                     ShipmentAlreadyCancelledError,
+                                     ShipmentAlreadyCanceledError,
                                      ShipmentNotFoundError, ShopNotFoundError,
                                      UserNotFoundError)
 from app.services.shop_stock import ShopStockService
@@ -27,6 +28,7 @@ class ShipmentService:
             user_repository: UserRepository,
             product_repository: ProductRepository,
             warehouse_stock_service: WarehouseStockService,
+            shop_stock_repository: ShopStockRepository,
             shop_stock_service: ShopStockService
         ):
         
@@ -35,6 +37,7 @@ class ShipmentService:
         self.user_repository = user_repository
         self.product_repository = product_repository
         self.warehouse_stock_service = warehouse_stock_service
+        self.shop_stock_repository = shop_stock_repository
         self.shop_stock_service = shop_stock_service
 
 
@@ -80,23 +83,33 @@ class ShipmentService:
 
         shipment = await self.shipment_repository.save(shipment)
 
-        if schema.to_shop_id is not None:
-            await self.accept_shipment(shipment.id, shipment.created_by_id)
+        if schema.to_shop_id is None:
+            return await self.accept_shipment(shipment.id, shipment.created_by_id)
+
+        shipment = await self.load_shipment_(shipment.id)
 
         return ShipmentView.model_validate(shipment)
 
 
     async def get_by_id(self, id: int) -> ShipmentDetailedView:
 
-        shipment = await self.shipment_repository.get_by_id(
-            id,
-            options=[selectinload(Shipment.items)]
-        )
-        
-        if shipment is None:
-            raise ShipmentNotFoundError(id)
+        shipment = await self.load_shipment_(id)
 
-        return ShipmentDetailedView.model_validate(shipment)
+        return ShipmentDetailedView(
+            id=shipment.id,
+            from_location=shipment.from_location,
+            to_shop=shipment.to_shop,
+            status=shipment.status,
+            created_by=shipment.created_by,
+            accepted_by=shipment.accepted_by,
+            created_at=shipment.created_at,
+            updated_at=shipment.updated_at,
+            count=len(shipment.items),
+            items=[
+                ShipmentItemView.model_validate(item)
+                for item in shipment.items
+            ]
+        )
 
 
     async def get_by_shop(self, shop_id: int) -> ShipmentList:
@@ -121,26 +134,17 @@ class ShipmentService:
 
     async def get_all(self) -> ShipmentList:
 
-        shipments = await self.shipment_repository.get_all()
+        shipments = await self.shipment_repository.get_all(
+            options=[
+                selectinload(Shipment.created_by),
+                selectinload(Shipment.to_shop)
+            ]
+        )
 
         return ShipmentList(
             count=len(shipments),
             items=[ShipmentView.model_validate(shipment) for shipment in shipments]
         )
-
-
-    async def update_status(self, id: int, status: ShipmentStatus) -> ShipmentView:
-        
-        shipment = await self.shipment_repository.get_by_id(id)
-
-        if shipment is None:
-            raise ShipmentNotFoundError(id)
-
-        shipment.status = status
-
-        shipment = await self.shipment_repository.save(shipment)
-
-        return ShipmentView.model_validate(shipment)
 
 
     async def accept_shipment(
@@ -149,32 +153,32 @@ class ShipmentService:
         user_id: int
     ) -> ShipmentView:
 
-        shipment = await self.shipment_repository.get_by_id(id)
-
-        if shipment is None:
-            raise ShipmentNotFoundError(id)
+        shipment = await self.load_shipment_(id)
 
         user = await self.user_repository.get_by_id(user_id)
 
         if user is None:
             raise UserNotFoundError(user_id)
 
+        if shipment.status == ShipmentStatus.ACCEPTED:
+            raise ShipmentAlreadyAcceptedError(id)
+
         if shipment.status == ShipmentStatus.CANCELED:
-            raise ShipmentAlreadyCancelledError(id)
+            raise ShipmentAlreadyCanceledError(id)
 
         if shipment.to_shop_id is not None:
             for item in shipment.items:
-                await self.shop_stock_service.increase_stock_quantity(
+                await self.shop_stock_service.add_stock(
                     UpdateShopStockQuantity(
                         shop_id=shipment.to_shop_id,
-                        product_id=item.id,
+                        product_id=item.product_id,
                         change=item.quantity
                     )
                 )
         else:
             for item in shipment.items:
-                await self.warehouse_stock_service.increase_stock_quantity(
-                    item.id,
+                await self.warehouse_stock_service.increase_stock_quantity_by_product_id(
+                    item.product_id,
                     item.quantity
                 )
 
@@ -182,6 +186,8 @@ class ShipmentService:
         shipment.accepted_by_id = user_id
 
         shipment = await self.shipment_repository.save(shipment)
+
+        shipment = await self.load_shipment_(shipment.id)
 
         return ShipmentView.model_validate(shipment)
 
@@ -191,7 +197,7 @@ class ShipmentService:
         id: int
     ) -> ShipmentView:
 
-        shipment = await self.shipment_repository.get_by_id(id)
+        shipment = await self.load_shipment_(id)
 
         if shipment is None:
             raise ShipmentNotFoundError(id)
@@ -199,8 +205,33 @@ class ShipmentService:
         if shipment.status == ShipmentStatus.ACCEPTED:
             raise ShipmentAlreadyAcceptedError(id)
 
+        if shipment.status == ShipmentStatus.CANCELED:
+            raise ShipmentAlreadyCanceledError(id)
+
         shipment.status = ShipmentStatus.CANCELED
 
         shipment = await self.shipment_repository.save(shipment)
 
         return ShipmentView.model_validate(shipment)
+
+
+    async def load_shipment_(
+        self,
+        id: int
+    ) -> Shipment:
+
+        shipment = await self.shipment_repository.get_by_id(
+            id,
+            options=[
+                selectinload(Shipment.to_shop),
+                selectinload(Shipment.created_by),
+                selectinload(Shipment.accepted_by),
+                selectinload(Shipment.items)
+                .selectinload(ShipmentItem.product)
+            ]
+        )
+
+        if not shipment:
+            raise ShipmentNotFoundError(id)
+
+        return shipment
