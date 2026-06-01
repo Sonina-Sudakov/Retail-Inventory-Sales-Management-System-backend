@@ -23,7 +23,15 @@ class ShipmentRepository(
         shop_id: int
     ) -> list[Shipment]:
         
-        stmt = select(Shipment).where(Shipment.to_shop_id == shop_id)
+        stmt = (
+            select(Shipment)
+            .where(Shipment.to_shop_id == shop_id)
+            .options(
+                selectinload(Shipment.created_by),
+                selectinload(Shipment.accepted_by),
+                selectinload(Shipment.to_shop)
+            )
+        )
 
         result = await self.session.execute(stmt)
 
@@ -55,12 +63,14 @@ class ShipmentRepository(
 
         stmt = (
             select(
-                Shipment,
-                Shop.name,
-                Shop.address
+                Shipment
             )
-            .join(Shop)
             .where(Shipment.status == status)
+            .options(
+                selectinload(Shipment.created_by),
+                selectinload(Shipment.accepted_by),
+                selectinload(Shipment.to_shop)
+            )
         )
 
         result = await self.session.execute(stmt)
