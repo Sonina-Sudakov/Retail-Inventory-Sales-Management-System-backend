@@ -1,10 +1,15 @@
-from base import Base
 from sqlalchemy import CheckConstraint, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from app.db.models.base import Base
+
 
 class ShipmentItem(Base):
-    __tablename__ = 'shipmentItems'    
+    __tablename__ = 'shipment_items'
+
+    __table_args__ = (
+        CheckConstraint('quantity >= 0'),
+    )
 
     shipment_id: Mapped[int] = mapped_column(
         ForeignKey('shipments.id'),
@@ -12,7 +17,7 @@ class ShipmentItem(Base):
     )
 
     shipment: Mapped['Shipment'] = relationship(
-        back_populates='shipment_items',
+        back_populates='items',
         lazy='raise'
     )
 
@@ -26,6 +31,5 @@ class ShipmentItem(Base):
     )
 
     quantity: Mapped[int] = mapped_column(
-        CheckConstraint('quantity >= 0'),
         nullable=False
     )

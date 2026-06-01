@@ -1,65 +1,63 @@
 from datetime import datetime
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
-from app.schemas.product import ProductViewDTO
-from app.schemas.shop import ShopViewDTO
-from app.schemas.user import UserViewDTO
+from app.schemas.product import ProductView
+from app.schemas.shop import ShopView
+from app.schemas.user import UserView
 
 
-class OrderCreateDTO(BaseModel):
-    shop_id: int 
+class OrderBaseModel(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+
+class OrderCreate(OrderBaseModel):
+    to_shop_id: int 
     created_by_id: int
     count: int
-    items: list[OrderItemCreateDTO]
+    items: list[OrderItemCreate]
 
 
-class OrderItemCreateDTO(BaseModel):
+class OrderItemCreate(OrderBaseModel):
     product_id: int
     quantity: int
 
 
-class OrderDetailedViewDTO(BaseModel):
+class OrderDetailedView(OrderBaseModel):
     id: int
-    shop: ShopViewDTO
-    created_by: UserViewDTO
+    to_shop: ShopView
+    created_by: UserView
     status: str
     created_at: datetime
     accepted_at: datetime | None = None
-    count: int
-    items: list[OrderItemViewDTO]
+    items: list[OrderItemView]
 
 
-class OrderItemViewDTO(BaseModel):
+class OrderItemView(OrderBaseModel):
     order_id: int
-    product: ProductViewDTO
+    product: ProductView
     quantity: int
 
 
-class OrderViewDTO(BaseModel):
+class OrderView(OrderBaseModel):
     id: int
-    shop: OrderShopViewDTO
-    created_by: OrderUserViewDTO
+    to_shop: OrderShopView
+    created_by: OrderUserView
     status: str
     created_at: datetime
     accepted_at: datetime | None = None
 
 
-class OrderListDTO(BaseModel):
+class OrderList(OrderBaseModel):
     count: int
-    items: list[OrderViewDTO]
+    items: list[OrderView]
 
 
-class OrderUpdateStatusDTO(BaseModel):
-    id: int
-    status: str
-
-
-class OrderShopViewDTO(BaseModel):
+class OrderShopView(OrderBaseModel):
     id: int
     name: str
 
 
-class OrderUserViewDTO(BaseModel):
+class OrderUserView(OrderBaseModel):
     id: int
     fullname: str

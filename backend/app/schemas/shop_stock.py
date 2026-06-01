@@ -1,34 +1,70 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
-from app.schemas.product import ProductViewDTO
+from app.schemas.product import ProductView
+from app.schemas.shop import ShopView
 
 
-class ShopStockCreateDTO(BaseModel):
+class ShopStockBaseModel(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+
+class ShopStockCreate(ShopStockBaseModel):
     shop_id: int
     product_id: int
     min_quantity: int
     quantity: int
 
 
-class ShopStockViewDTO(BaseModel):
-    product: ProductViewDTO
+class ShopStockView(ShopStockBaseModel):
+    shop: ShopView
+    product: ProductView
     min_quantity: int
     quantity: int
 
 
-class ShopStockUpdate(BaseModel):
-    shop_id: int
-    product_id: int
+class ShopStockWithProductView(ShopStockBaseModel):
+    product: ProductView
     min_quantity: int
     quantity: int
 
 
-class ShopStockListDTO(BaseModel):
-    shop: ShopStockShopViewDTO
+class ShopStockWithShopView(ShopStockBaseModel):
+    shop: ShopView
+    min_quantity: int
+    quantity: int
+
+
+class ProductInShopsView(ShopStockBaseModel):
+    product: ProductView
     count: int
-    items: list[ShopStockViewDTO]
+    items: list[ShopStockWithShopView]
 
 
-class ShopStockShopViewDTO(BaseModel):
+class ShopStockUpdate(ShopStockBaseModel):
+    shop_id: int
+    product_id: int
+    min_quantity: int
+    quantity: int
+
+
+class ShopStockList(ShopStockBaseModel):
+    shop: ShopView
+    count: int
+    items: list[ShopStockWithProductView]
+
+
+class UpdateShopStockQuantity(ShopStockBaseModel):
+    shop_id: int
+    product_id: int 
+    change: int
+
+
+class UpdateShopStockMinQuantity(ShopStockBaseModel):
+    shop_id: int
+    product_id: int 
+    min_quantity: int
+
+
+class ShopStockShopView(ShopStockBaseModel):
     id: int
     name: str

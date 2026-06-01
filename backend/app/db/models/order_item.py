@@ -1,10 +1,11 @@
-from base import Base
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from app.db.models.base import Base
+
 
 class OrderItem(Base):
-    __tablename__ = 'orderItems'    
+    __tablename__ = 'order_items'
 
     order_id: Mapped[int] = mapped_column(
         ForeignKey('orders.id'),
@@ -12,7 +13,7 @@ class OrderItem(Base):
     )
 
     order: Mapped['Order'] = relationship(
-        back_populates='order_items',
+        back_populates='items',
         lazy='raise'
     )
 

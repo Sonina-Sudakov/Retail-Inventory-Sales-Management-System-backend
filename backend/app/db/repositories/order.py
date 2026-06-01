@@ -1,11 +1,12 @@
-from enums import OrderStatus
+from app.enums import OrderStatus
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql.expression import select
+from sqlalchemy.orm.strategy_options import selectinload
 
 from app.db.models.order import Order
 from app.db.models.order_item import OrderItem
 from app.db.models.shop import Shop
-from app.db.repositories.base_repository import BaseRepository
+from app.db.repositories.base import BaseRepository
 
 
 class OrderRepository(
@@ -23,7 +24,16 @@ class OrderRepository(
         shop_id: int
     ) -> list[Order]:
         
-        stmt = select(Order).where(Order.to_shop_id == shop_id)
+        stmt = (
+            select(
+                Order
+            )
+            .where(Order.to_shop_id == shop_id)
+            .options(
+                selectinload(Order.to_shop),
+                selectinload(Order.created_by)
+            )
+        )
 
         result = await self.session.execute(stmt)
 
@@ -50,7 +60,7 @@ class OrderRepository(
         order = await self.get_by_id(
             id,
             options=[
-                selectinload(Order.shop),
+                selectinload(Order.to_shop),
                 selectinload(Order.created_by),
                 selectinload(Order.order_items)
             ]
@@ -66,24 +76,15 @@ class OrderRepository(
 
         stmt = (
             select(
-                Order,
-                Shop.name,
-                Shop.address
+                Order
             )
-            .join(Shop)
             .where(Order.status == status)
+            .options(
+                selectinload(Order.to_shop),
+                selectinload(Order.created_by)
+            )
         )
 
         result = await self.session.execute(stmt)
 
         return list(result.scalars().all())   
-
-
-    async def save_order_item(
-        self,
-        entity: OrderItem
-    ) -> None:
-
-        self.session.add(entity)
-
-        await self.session.flush()

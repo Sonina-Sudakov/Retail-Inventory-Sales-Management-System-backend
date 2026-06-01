@@ -1,12 +1,18 @@
 from datetime import datetime
 
-from base import Base
 from sqlalchemy import CheckConstraint, ForeignKey, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from app.db.models.base import Base
+
 
 class ShopStock(Base):
-    __tablename__ = 'shopStocks'
+    __tablename__ = 'shop_stocks'
+
+    __table_args__ = (
+        CheckConstraint('quantity >= 0'),
+        CheckConstraint('min_quantity >= 0')
+    )
 
     product_id: Mapped[int] = mapped_column(
         ForeignKey('products.id'),
@@ -27,12 +33,10 @@ class ShopStock(Base):
     )
 
     quantity: Mapped[int] = mapped_column(
-        CheckConstraint('quantity >= 0'),
         nullable=False
     )
 
     min_quantity: Mapped[int] = mapped_column(
-        CheckConstraint('min_quantity >= 0'),
         nullable=False
     )
 

@@ -1,9 +1,13 @@
 from decimal import Decimal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
-class ProductCreateDTO(BaseModel):
+class ProductBaseModel(BaseModel):
+    model_config = ConfigDict(from_attributes=True, populate_by_name=True)
+
+
+class ProductCreate(ProductBaseModel):
     name: str
     unit: str
     type_: str = Field(alias='type')
@@ -11,7 +15,7 @@ class ProductCreateDTO(BaseModel):
     origin: str
 
 
-class ProductViewDTO(BaseModel):
+class ProductView(ProductBaseModel):
     id: int
     name: str
     unit: str
@@ -20,7 +24,7 @@ class ProductViewDTO(BaseModel):
     origin: str
 
 
-class ProductUpdateDTO(BaseModel):
+class ProductUpdate(ProductBaseModel):
     id: int
     name: str
     unit: str
@@ -29,6 +33,6 @@ class ProductUpdateDTO(BaseModel):
     origin: str
 
 
-class ProductListDTO(BaseModel):
+class ProductList(ProductBaseModel):
     count: int
-    items: list[ProductViewDTO]
+    items: list[ProductView]

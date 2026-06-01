@@ -1,8 +1,9 @@
 from datetime import datetime
 
-from base import Base
 from sqlalchemy import ForeignKey, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from app.db.models.base import Base
 
 
 class Sale(Base):
@@ -35,7 +36,8 @@ class Sale(Base):
         nullable=False
     )
 
-    sale_items: Mapped[list['SaleItem']] = relationship(
+    items: Mapped[list['SaleItem']] = relationship(
         back_populates='sale',
+        cascade='all, delete-orphan',
         lazy='raise'
     )

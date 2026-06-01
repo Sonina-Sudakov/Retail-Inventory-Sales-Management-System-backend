@@ -1,59 +1,63 @@
 from datetime import datetime
 from decimal import Decimal
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
-from app.schemas.product import ProductViewDTO
-from app.schemas.shop import ShopViewDTO
-from app.schemas.user import UserViewDTO
+from app.schemas.product import ProductView
+from app.schemas.shop import ShopView
+from app.schemas.user import UserView
 
 
-class SaleCreateDTO(BaseModel):
+class SaleBaseModel(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+
+class SaleCreate(SaleBaseModel):
     shop_id: int
     user_id: int
     count: int
-    items: list[SaleItemCreateDTO] 
+    items: list[SaleItemCreate] 
 
 
-class SaleItemCreateDTO(BaseModel):
+class SaleItemCreate(SaleBaseModel):
     product_id: int
     quantity: int
     price: Decimal
 
 
-class SaleDetailedViewDTO(BaseModel):
+class SaleDetailedView(SaleBaseModel):
     id: int
-    shop: ShopViewDTO
-    user: UserViewDTO
+    shop: ShopView
+    user: UserView
     count: int
-    items: list[SaleItemViewDTO]
+    items: list[SaleItemView]
     created_at: datetime
 
 
-class SaleItemViewDTO(BaseModel):
+class SaleItemView(SaleBaseModel):
     sale_id: int
-    product: ProductViewDTO
+    product: ProductView
     quantity: int
     price: Decimal
 
 
-class SaleViewDTO(BaseModel):
+class SaleView(SaleBaseModel):
     id: int
-    shop: SaleShopViewDTO
-    user: SaleUserViewDTO
+    shop: SaleShopView
+    user: SaleUserView
     created_at: datetime
 
 
-class SaleListDTO(BaseModel):
+class SaleList(SaleBaseModel):
     count: int
-    items: list[SaleViewDTO]
+    items: list[SaleView]
 
 
-class SaleShopViewDTO(BaseModel):
+class SaleShopView(SaleBaseModel):
     id: int
     name: str
 
 
-class SaleUserViewDTO(BaseModel):
+class SaleUserView(SaleBaseModel):
     id: int
     fullname: str

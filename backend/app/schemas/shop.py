@@ -1,7 +1,11 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, ConfigDict, EmailStr
 
 
-class ShopCreateDTO(BaseModel):
+class ShopBaseModel(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+
+class ShopCreate(ShopBaseModel):
     name: str
     address: str
     contact_face: str
@@ -9,7 +13,7 @@ class ShopCreateDTO(BaseModel):
     email: EmailStr
 
 
-class ShopViewDTO(BaseModel):
+class ShopView(ShopBaseModel):
     id: int
     name: str
     address: str
@@ -18,7 +22,7 @@ class ShopViewDTO(BaseModel):
     email: EmailStr
 
 
-class ShopUpdateDTO(BaseModel):
+class ShopUpdate(ShopBaseModel):
     id: int
     name: str
     address: str
@@ -27,6 +31,6 @@ class ShopUpdateDTO(BaseModel):
     email: EmailStr
 
 
-class ShopListDTO(BaseModel):
+class ShopList(ShopBaseModel):
     count: int
-    items: list[ShopViewDTO]
+    items: list[ShopView]

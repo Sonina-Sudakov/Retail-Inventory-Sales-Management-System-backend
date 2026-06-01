@@ -1,9 +1,10 @@
 from datetime import datetime
 from decimal import Decimal
 
-from base import Base
 from sqlalchemy import Numeric, String, func
 from sqlalchemy.orm import Mapped, mapped_column
+
+from app.db.models.base import Base
 
 
 class Product(Base):
@@ -15,7 +16,8 @@ class Product(Base):
 
     name: Mapped[str] = mapped_column(
         String(30),
-        nullable=False
+        nullable=False,
+        unique=True
     )
 
     unit: Mapped[str] = mapped_column(
