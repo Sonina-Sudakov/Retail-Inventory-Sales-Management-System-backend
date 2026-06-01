@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends, Response
-from fastapi.responses import JSONResponse
 
 from app.api.dependencies import get_product_service
+from app.core.auth.dependencies import get_current_user, require_role
+from app.enums import UserRole
 from app.schemas.product import (ProductCreate, ProductList, ProductUpdate,
                                  ProductView)
 from app.services.product import ProductService
@@ -12,7 +13,10 @@ router = APIRouter(prefix='/products')
 @router.post('/', response_model=ProductView)
 async def create_product(
     product: ProductCreate,
-    product_service: ProductService = Depends(get_product_service)
+    product_service: ProductService = Depends(get_product_service),
+    user=Depends(
+        get_current_user
+    )
 ): 
     
     return await product_service.create_product(product)
@@ -21,7 +25,10 @@ async def create_product(
 @router.get('/', response_model=ProductView)
 async def get_product_by_id(
     id: int,
-    product_service: ProductService = Depends(get_product_service)
+    product_service: ProductService = Depends(get_product_service),
+    user=Depends(
+        get_current_user
+    )
 ):
 
     return await product_service.get_by_id(id)
@@ -29,7 +36,10 @@ async def get_product_by_id(
 
 @router.get('/all', response_model=ProductList)
 async def get_all_products(
-    product_service: ProductService = Depends(get_product_service)
+    product_service: ProductService = Depends(get_product_service),
+    user=Depends(
+        get_current_user
+    )
 ):
 
     return await product_service.get_all()
@@ -38,7 +48,10 @@ async def get_all_products(
 @router.delete('/')
 async def delete_product_by_id(
     id: int,
-    product_service: ProductService = Depends(get_product_service)
+    product_service: ProductService = Depends(get_product_service),
+    user=Depends(
+        require_role(UserRole.ADMIN)
+    )
 ):
     
     await product_service.delete(id)
@@ -49,7 +62,10 @@ async def delete_product_by_id(
 @router.put('/', response_model=ProductView)
 async def update_product(
     product: ProductUpdate,
-    product_service: ProductService = Depends(get_product_service)
+    product_service: ProductService = Depends(get_product_service),
+    user=Depends(
+        require_role(UserRole.ADMIN)
+    )
 ):
     
     return await product_service.update(product)
