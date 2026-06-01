@@ -1,6 +1,8 @@
 from fastapi import APIRouter, Depends
 
 from app.api.dependencies import get_sale_service
+from app.core.auth.dependencies import require_role
+from app.enums import UserRole
 from app.schemas.sale import SaleCreate, SaleDetailedView, SaleList, SaleView
 from app.services import SaleService
 
@@ -9,7 +11,10 @@ router = APIRouter(prefix='/sales')
 
 @router.get('/all', response_model=SaleList)
 async def get_all_sales(
-    sale_service: SaleService = Depends(get_sale_service)
+    sale_service: SaleService = Depends(get_sale_service),
+    user=Depends(
+        require_role(UserRole.ADMIN)
+    )
 ):
 
     return await sale_service.get_all()
@@ -18,7 +23,10 @@ async def get_all_sales(
 @router.get('/', response_model=SaleDetailedView)
 async def get_sale_by_id(
     id: int,
-    sale_service: SaleService = Depends(get_sale_service)
+    sale_service: SaleService = Depends(get_sale_service),
+    user=Depends(
+        require_role(UserRole.ADMIN, UserRole.SHOPKEEPER)
+    )
 ):
 
     return await sale_service.get_by_id(id)
@@ -27,7 +35,10 @@ async def get_sale_by_id(
 @router.get('/shop/{id}', response_model=SaleList)
 async def get_sale_by_shop_id(
     id: int,
-    sale_service: SaleService = Depends(get_sale_service)
+    sale_service: SaleService = Depends(get_sale_service),
+    user=Depends(
+        require_role(UserRole.ADMIN, UserRole.SHOPKEEPER)
+    )
 ):
 
     return await sale_service.get_by_shop(id)
@@ -36,7 +47,10 @@ async def get_sale_by_shop_id(
 @router.post('/', response_model=SaleView)
 async def create_sale(
     sale: SaleCreate,
-    sale_service: SaleService = Depends(get_sale_service)
+    sale_service: SaleService = Depends(get_sale_service),
+    user=Depends(
+        require_role('CASH_REGISTER')
+    )
 ):
 
     return await sale_service.create_sale(sale)
