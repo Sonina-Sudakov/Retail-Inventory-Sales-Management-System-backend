@@ -181,6 +181,35 @@ class WarehouseStockService:
         return WarehouseStockView.model_validate(model)
 
 
+    async def decrease_stock_quantity_by_product_id(
+        self,
+        product_id: int,
+        change: int
+    ) -> WarehouseStockView:
+
+        if change < 0:
+            raise InvalidChangeValueError(change)
+
+        model = await self.warehouse_stock_repository.get_product_in_warehouse(product_id)
+
+        # TODO
+        # Implement logic of cell choosing
+
+        if len(model) == 0:
+            raise WarehouseStockNotFoundError(product_id)
+        
+        model = model[0]
+
+        if model.quantity - change < 0:
+            raise InsufficientWarehouseStockError(model.id, model.quantity, change)
+
+        model.quantity -= change
+
+        await self.warehouse_stock_repository.save(model)
+
+        return WarehouseStockView.model_validate(model)
+
+
     async def change_stock_cell_code(
         self,
         schema: ChangeWarehouseStockCellCode

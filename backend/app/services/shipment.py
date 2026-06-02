@@ -66,7 +66,7 @@ class ShipmentService:
                 raise ProductNotFoundError(item.product_id)
 
             if schema.to_shop_id is not None:
-                await self.warehouse_stock_service.decrease_stock_quantity(item.product_id, item.quantity)
+                await self.warehouse_stock_service.decrease_stock_quantity_by_product_id(item.product_id, item.quantity)
 
         shipment = Shipment(
             from_location=schema.from_location,
