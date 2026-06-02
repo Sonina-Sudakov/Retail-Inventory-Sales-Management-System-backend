@@ -150,7 +150,7 @@ class OrderService:
     async def update_status_(self, model: Order, status: OrderStatus) -> OrderView:
 
         if status == OrderStatus.ACCEPTED:
-            model.accepted_at = datetime.now(timezone.utc)
+            model.accepted_at = datetime.now()
 
         model.status = status
 
