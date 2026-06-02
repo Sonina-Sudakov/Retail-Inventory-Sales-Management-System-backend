@@ -49,7 +49,7 @@ async def create_sale(
     sale: SaleCreate,
     sale_service: SaleService = Depends(get_sale_service),
     user=Depends(
-        require_role('CASH_REGISTER')
+        require_role(UserRole.SHOPKEEPER)
     )
 ):
 
