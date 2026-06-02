@@ -28,6 +28,7 @@ class UserService:
             username=schema.username,
             fullname=schema.fullname,
             hash_password=hash_password,
+            works_in_shop_id=schema.works_in_shop_id,
             role=schema.role
         )
 
