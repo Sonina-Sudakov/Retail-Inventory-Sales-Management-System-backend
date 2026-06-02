@@ -155,7 +155,7 @@ class OrderService:
 
         order = await self.order_repository.save(order)
 
-        return OrderView.model_validate(await self.load_full_order_(id))
+        return OrderView.model_validate(await self.load_order_(id))
 
 
     async def load_order_(
