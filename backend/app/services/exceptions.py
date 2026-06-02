@@ -119,6 +119,11 @@ class WarehouseStockNotFoundError(Exception):
         self.id = id
 
 
+class WarehouseStockWithProductNotFoundError(Exception):
+    def __init__(self, id):
+        self.id = id
+
+
 class InsufficientWarehouseStockError(Exception):
     def __init__(self, id, quantity, change):
         self.id = id 

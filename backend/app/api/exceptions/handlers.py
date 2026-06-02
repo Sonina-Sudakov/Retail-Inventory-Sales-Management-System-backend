@@ -20,7 +20,8 @@ from app.services.exceptions import (DuplicateCellCodeError, EmptyOrderError,
                                      ShopStockNotFoundError, UnauthorizedError,
                                      UserAlreadyExistsError, UserNotFoundError,
                                      WarehouseStockAlreadyExistsError,
-                                     WarehouseStockNotFoundError)
+                                     WarehouseStockNotFoundError,
+                                     WarehouseStockWithProductNotFoundError)
 
 # ---[[ USER ]]--- #
 
@@ -258,6 +259,19 @@ async def warehouse_stock_not_found_handler(
         content={
             "message":
                 f"Warehouse stock with id = {exc.id} doesn't exist"
+        }
+    )
+
+
+async def warehouse_stock_with_product_not_found_handler(
+    request: Request,
+    exc: WarehouseStockWithProductNotFoundError
+):
+    return JSONResponse(
+        status_code=404,
+        content={
+            "message":
+                f"Warehouse stock for product with id = {exc.id} doesn't exist. Please, create stock for this product"
         }
     )
 
