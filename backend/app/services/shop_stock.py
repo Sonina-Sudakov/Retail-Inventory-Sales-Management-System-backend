@@ -63,11 +63,14 @@ class ShopStockService:
         schema: UpdateShopStockQuantity
     ) -> ShopStockView:
 
-        model = await self.load_stock_(schema.shop_id, schema.product_id)
+        # TODO
+        # Remove try-except as main business logic
 
-        if model:
+        try:
+            model = await self.load_stock_(schema.shop_id, schema.product_id)
+
             return await self.increase_stock_quantity(schema)
-        else:
+        except ShopStockNotFoundError:
             return await self.create_stock(
                 ShopStockCreate(
                     shop_id=schema.shop_id,

@@ -27,7 +27,7 @@ async def get_shipment(
     id: int,
     shipment_service: ShipmentService = Depends(get_shipment_stock_service),
     user=Depends(
-        require_role(UserRole.ADMIN, UserRole.STOREKEEPER)
+        get_current_user
     )
 ):
 
