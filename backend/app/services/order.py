@@ -76,7 +76,7 @@ class OrderService:
 
     async def get_by_id(self, id: int) -> OrderDetailedView:
 
-        order = await self.load_order_(id)
+        order = await self.load_order_with_products_(id)
         
         if order is None:
             raise OrderNotFoundError(id)
@@ -169,6 +169,26 @@ class OrderService:
                 selectinload(Order.to_shop),
                 selectinload(Order.created_by).selectinload(User.works_in_shop),
                 selectinload(Order.items)
+            ]
+        )
+
+        if not model:
+            raise OrderNotFoundError(id)
+
+        return model
+
+
+    async def load_order_with_products_(
+        self,
+        id: int
+    ) -> Order:
+
+        model = await self.order_repository.get_by_id(
+            id,
+            options=[
+                selectinload(Order.to_shop),
+                selectinload(Order.created_by).selectinload(User.works_in_shop),
+                selectinload(Order.items).selectinload(OrderItem.product)
             ]
         )
 
