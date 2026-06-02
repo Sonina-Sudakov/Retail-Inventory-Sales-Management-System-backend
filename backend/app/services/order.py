@@ -123,12 +123,13 @@ class OrderService:
 
         order = await self.order_repository.get_by_id(id)
 
+        if order is None:
+            raise OrderNotFoundError(id)
+
         if order.status != OrderStatus.PENDING:
             raise OrderIsNotPendingError(id)
 
-        order = await self.update_status_(id, OrderStatus.ACCEPTED)
-
-        order.accepted_at = datetime.now(timezone.utc)
+        order = await self.update_status_(order, OrderStatus.ACCEPTED)
 
         return order
 
@@ -137,25 +138,25 @@ class OrderService:
 
         order = await self.order_repository.get_by_id(id)
 
-        if order.status != OrderStatus.PENDING:
-            raise OrderIsNotPendingError(id)
-
-
-        return await self.update_status_(id, OrderStatus.CANCELED)
-    
-
-    async def update_status_(self, id: int, status: OrderStatus) -> OrderView:
-
-        order = await self.order_repository.get_by_id(id)
-
         if order is None:
             raise OrderNotFoundError(id)
 
-        order.status = status
+        if order.status != OrderStatus.PENDING:
+            raise OrderIsNotPendingError(id)
 
-        order = await self.order_repository.save(order)
+        return await self.update_status_(order, OrderStatus.CANCELED)
+    
 
-        return OrderView.model_validate(await self.load_order_(id))
+    async def update_status_(self, model: Order, status: OrderStatus) -> OrderView:
+
+        if status == OrderStatus.ACCEPTED:
+            model.accepted_at = datetime.now(timezone.utc)
+
+        model.status = status
+
+        await self.order_repository.save(model)
+
+        return OrderView.model_validate(await self.load_order_(model.id))
 
 
     async def load_order_(
