@@ -1,18 +1,20 @@
 from datetime import datetime, timezone
+
 from sqlalchemy.orm.strategy_options import selectinload
 
 from app.db.models.order import Order
 from app.db.models.order_item import OrderItem
+from app.db.models.user import User
 from app.db.repositories.order import OrderRepository
-from app.db.repositories.shop import ShopRepository
 from app.db.repositories.product import ProductRepository
+from app.db.repositories.shop import ShopRepository
 from app.db.repositories.user import UserRepository
 from app.enums import OrderStatus
 from app.schemas.order import (OrderCreate, OrderDetailedView, OrderList,
                                OrderView)
-from app.services.exceptions import (EmptyOrderError, OrderNotFoundError,
-                                     ProductNotFoundError, ShopNotFoundError,
-                                     UserNotFoundError, OrderIsNotPendingError)
+from app.services.exceptions import (EmptyOrderError, OrderIsNotPendingError,
+                                     OrderNotFoundError, ProductNotFoundError,
+                                     ShopNotFoundError, UserNotFoundError)
 
 
 class OrderService:
@@ -67,19 +69,14 @@ class OrderService:
 
         order = await self.order_repository.save(order)
 
-        return OrderView.model_validate(await self.load_full_order_(order.id))
+        order = await self.load_order_(order.id)
+
+        return OrderView.model_validate(order)
 
 
     async def get_by_id(self, id: int) -> OrderDetailedView:
 
-        order = await self.order_repository.get_by_id(
-            id,
-            options=[
-                selectinload(Order.to_shop),
-                selectinload(Order.created_by),
-                selectinload(Order.items).selectinload(OrderItem.product),
-            ]
-        )
+        order = await self.load_order_(id)
         
         if order is None:
             raise OrderNotFoundError(id)
@@ -147,17 +144,6 @@ class OrderService:
         return await self.update_status_(id, OrderStatus.CANCELED)
     
 
-    async def load_full_order_(self, id: int) -> Order | None:
-
-        return await self.order_repository.get_by_id(
-            id,
-            options=[
-                selectinload(Order.to_shop),
-                selectinload(Order.created_by)
-            ]
-        )
-
-
     async def update_status_(self, id: int, status: OrderStatus) -> OrderView:
 
         order = await self.order_repository.get_by_id(id)
@@ -170,3 +156,23 @@ class OrderService:
         order = await self.order_repository.save(order)
 
         return OrderView.model_validate(await self.load_full_order_(id))
+
+
+    async def load_order_(
+        self,
+        id: int
+    ) -> Order:
+
+        model = await self.order_repository.get_by_id(
+            id,
+            options=[
+                selectinload(Order.to_shop),
+                selectinload(Order.created_by).selectinload(User.works_in_shop),
+                selectinload(Order.items)
+            ]
+        )
+
+        if not model:
+            raise OrderNotFoundError(id)
+
+        return model

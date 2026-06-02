@@ -2,6 +2,7 @@ from sqlalchemy.orm.strategy_options import selectinload
 
 from app.db.models.shipment import Shipment
 from app.db.models.shipment_item import ShipmentItem
+from app.db.models.user import User
 from app.db.repositories.product import ProductRepository
 from app.db.repositories.shipment import ShipmentRepository
 from app.db.repositories.shop import ShopRepository
@@ -224,8 +225,8 @@ class ShipmentService:
             id,
             options=[
                 selectinload(Shipment.to_shop),
-                selectinload(Shipment.created_by),
-                selectinload(Shipment.accepted_by),
+                selectinload(Shipment.created_by).selectinload(User.works_in_shop),
+                selectinload(Shipment.accepted_by).selectinload(User.works_in_shop),
                 selectinload(Shipment.items)
                 .selectinload(ShipmentItem.product)
             ]

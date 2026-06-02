@@ -2,6 +2,7 @@ from sqlalchemy.orm.strategy_options import selectinload
 
 from app.db.models.sale import Sale
 from app.db.models.sale_item import SaleItem
+from app.db.models.user import User
 from app.db.repositories.product import ProductRepository
 from app.db.repositories.sale import SaleRepository
 from app.db.repositories.shop import ShopRepository
@@ -77,28 +78,14 @@ class SaleService:
 
         sale = await self.sale_repository.save(sale)
 
-        sale = await self.sale_repository.get_by_id(
-            sale.id,
-            options=[
-                selectinload(Sale.shop),
-                selectinload(Sale.user),
-                selectinload(Sale.items)
-            ]
-        )
+        sale = await self.load_sell_(sale.id)
 
         return SaleView.model_validate(sale)
 
 
     async def get_by_id(self, id: int) -> SaleDetailedView:
 
-        sale = await self.sale_repository.get_by_id(
-            id,
-            options=[
-                selectinload(Sale.shop),
-                selectinload(Sale.user),
-                selectinload(Sale.items).selectinload(SaleItem.product)
-            ]
-        )
+        sale = await self.load_sell_(id)
         
         if sale is None:
             raise SaleNotFoundError(id)
@@ -125,6 +112,7 @@ class SaleService:
             items=[SaleView.model_validate(sale) for sale in sales]
         )
 
+
     async def get_all(self) -> SaleList:
 
         sales = await self.sale_repository.get_all(
@@ -139,3 +127,22 @@ class SaleService:
             items=[SaleView.model_validate(sale) for sale in sales]
         )
 
+
+    async def load_sell_(
+        self,
+        id: int
+    ) -> Sale:
+
+        model = await self.sale_repository.get_by_id(
+            id,
+            options=[
+                selectinload(Sale.shop),
+                selectinload(Sale.user).selectinload(User.works_in_shop),
+                selectinload(Sale.items).selectinload(SaleItem.product)
+            ]
+        )
+
+        if not model:
+            raise SaleNotFoundError(id)
+
+        return model
