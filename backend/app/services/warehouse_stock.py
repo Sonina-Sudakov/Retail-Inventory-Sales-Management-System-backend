@@ -186,14 +186,18 @@ class WarehouseStockService:
         schema: ChangeWarehouseStockCellCode
     ) -> WarehouseStockView:
 
+        model = await self.warehouse_stock_repository.get_stock_by_cell_code(schema.cell_code)
+
+        if model:
+            raise DuplicateCellCodeError(schema.cell_code)
+
         model = await self.load_stock_(schema.id)
 
         model.cell_code = schema.cell_code
 
-        try:
-            model = await self.warehouse_stock_repository.save(model)
-        except IntegrityError:
-            raise DuplicateCellCodeError(schema.cell_code)
+        model = await self.warehouse_stock_repository.save(model)
+
+        model = await self.load_stock_(model.id)
 
         return WarehouseStockView.model_validate(model)
 
