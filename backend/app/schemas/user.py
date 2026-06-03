@@ -1,11 +1,16 @@
 from pydantic import BaseModel, ConfigDict, model_validator
+from pydantic.alias_generators import to_camel
 
 from app.enums import UserRole
 from app.schemas.shop import ShopView
 
 
 class UserBaseModel(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(
+        from_attributes=True,
+        alias_generator=to_camel,
+        populate_by_name=True
+    )
 
 
 class UserCreate(UserBaseModel):

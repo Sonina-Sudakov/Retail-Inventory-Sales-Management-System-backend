@@ -1,10 +1,15 @@
 from decimal import Decimal
 
 from pydantic import BaseModel, ConfigDict, Field
+from pydantic.alias_generators import to_camel
 
 
 class ProductBaseModel(BaseModel):
-    model_config = ConfigDict(from_attributes=True, populate_by_name=True)
+    model_config = ConfigDict(
+        from_attributes=True,
+        alias_generator=to_camel,
+        populate_by_name=True
+    )
 
 
 class ProductCreate(ProductBaseModel):
