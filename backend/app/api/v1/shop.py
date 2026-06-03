@@ -103,7 +103,7 @@ async def get_shop_stocks(
     id: int,
     shop_stock_service: ShopStockService = Depends(get_shop_stock_service),
     user=Depends(
-        require_role(UserRole.SHOPKEEPER)
+        require_role(UserRole.SHOPKEEPER, UserRole.ADMIN)
     )
 ):
 
