@@ -127,7 +127,7 @@ def register_exception_handlers(app: FastAPI):
     )
 
     app.add_exception_handler(
-        WarehouseStockWithProductNotFoundError
+        WarehouseStockWithProductNotFoundError,
         warehouse_stock_with_product_not_found_handler
     )
 
